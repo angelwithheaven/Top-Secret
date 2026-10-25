@@ -1184,9 +1184,15 @@ function sendToAgent(text){
   chatBusy=true;
   document.getElementById('sendBtn').disabled=true;
   document.getElementById('chatInput').disabled=true;
-  const loveReply={aex:'뭐야, 저도 사랑합니다~',tezev:null,mern:'... 왜 상처에 소금을 뿌리십니까.'}[id];
+  let reply;
+  if(text==='사랑해'){
+    reply={aex:'뭐야, 저도 사랑합니다~',tezev:null,mern:'... 왜 상처에 소금을 뿌리십니까.'}[id];
+  }else{
+    reply=responses[id][replyIndex[id]%responses[id].length];
+    replyIndex[id]++;
+  }
   setTimeout(()=>{
-    if(!shutdownStarted&&loveReply){appendMessage(id,'agent',loveReply);playBeep(id==='mern'?300:530,'sine',.09);}
+    if(!shutdownStarted&&reply){appendMessage(id,'agent',reply);playBeep(id==='mern'?300:530,'sine',.09);}
     chatBusy=false;
     document.getElementById('sendBtn').disabled=false;
     document.getElementById('chatInput').disabled=false;
