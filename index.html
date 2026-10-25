@@ -225,6 +225,15 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .alien-console{margin:15px auto 0;border:1px solid #71344b66;background:#050307e8;padding:13px;text-align:left;min-height:100px;font-size:10px;line-height:2.1;color:#c06d8a;overflow-wrap:anywhere}
 .alien-console div{animation:fadein .15s}
 .shutdown .final-message{display:none;font-size:clamp(28px,7vw,60px);font-weight:900;letter-spacing:.13em;color:#fff;text-shadow:0 0 25px #ff1744,0 0 70px #ff1744;margin-top:28px;animation:finalJump .45s steps(2,end) infinite}
+.shutdown.jumpscare{background:#080006;animation:jumpFlash .13s steps(2,end) infinite}
+.shutdown.jumpscare .shutdown-inner{border:0;background:transparent;box-shadow:none;animation:jumpShake .07s steps(2,end) infinite}
+.shutdown.jumpscare .warning-icon,.shutdown.jumpscare h1,.shutdown.jumpscare p,.shutdown.jumpscare .coordinate-box,.shutdown.jumpscare .alien-console,.shutdown.jumpscare #alienFinal,.shutdown.jumpscare small{display:none!important}
+.shutdown.jumpscare .final-message{display:block!important;position:relative;margin:0;padding:8vh 2vw;font-size:clamp(38px,12vw,130px);line-height:.95;letter-spacing:-.06em;color:#fff;background:#9b001f;text-shadow:4px 0 #00f0ff,-4px 0 #ff003c,0 0 18px #ff1744,0 0 65px #ff1744;transform:scale(1.04);animation:jumpText .11s steps(2,end) infinite}
+.shutdown.jumpscare .final-message:before{content:"⛔";display:block;font-size:clamp(35px,8vw,90px);margin-bottom:3vh;animation:jumpIcon .2s steps(2,end) infinite}
+@keyframes jumpFlash{0%,100%{background:#080006}50%{background:#f00032}}
+@keyframes jumpShake{0%,100%{transform:translate(0,0) scale(1)}25%{transform:translate(-10px,5px) scale(1.015)}50%{transform:translate(8px,-4px) scale(.99)}75%{transform:translate(-4px,-7px) scale(1.02)}}
+@keyframes jumpText{0%,100%{transform:translate(0) scale(1.02);filter:contrast(1.4)}25%{transform:translate(-8px,3px) scale(1.07);filter:hue-rotate(35deg) contrast(2)}50%{transform:translate(6px,-2px) scale(.98);filter:invert(.12) contrast(1.8)}75%{transform:translate(-2px,5px) scale(1.05);filter:contrast(2.5)}}
+@keyframes jumpIcon{0%,100%{transform:scale(1) rotate(-4deg)}50%{transform:scale(1.25) rotate(5deg)}}
 .shutdown .alien-final{display:none;font-size:clamp(15px,3vw,24px);line-height:2;letter-spacing:.12em;color:#ff8eaa;text-shadow:0 0 22px #ff1744;margin-top:10px;overflow-wrap:anywhere}
 @keyframes finalJump{0%,100%{transform:translate(0);opacity:1}20%{transform:translate(-3px,2px);opacity:.75}40%{transform:translate(3px,-1px);opacity:1}60%{transform:translate(-1px,-2px);opacity:.65}80%{transform:translate(2px,1px);opacity:1}}
 .shutdown.final .warning-icon,.shutdown.final h1,.shutdown.final p,.shutdown.final .coordinate-box,.shutdown.final .alien-console,.shutdown.final small{display:none}
@@ -1134,7 +1143,14 @@ function triggerShutdownSequence(){
   term.classList.add('glitch-anim');
   document.getElementById('systemStatus').textContent='방화벽 침해';
   overlay.classList.remove('hidden');
+  overlay.classList.add('jumpscare');
+  document.getElementById('finalMessage').textContent='GET OUT HUMAN';
   playAlarm();
+  playBeep(48,'sawtooth',1.1,.16);
+  setTimeout(()=>playBeep(1750,'square',.65,.12),90);
+  setTimeout(()=>playBeep(110,'sawtooth',.9,.15),260);
+  setTimeout(()=>playBeep(2100,'square',.45,.1),520);
+  setTimeout(()=>overlay.classList.remove('jumpscare'),1250);
 
   const consoleBox=document.getElementById('alienConsole');
   consoleBox.innerHTML='';
