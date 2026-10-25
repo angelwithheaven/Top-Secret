@@ -556,7 +556,7 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
       secret:'[관계 관측 / 민간인 U-01] 대상 인간이 요원을 구조한 이후, 요원은 임무상 필요한 범위를 넘어 대상의 귀가 시간과 생활 리듬을 기억하고 이에 맞춰 행동하는 경향을 보임. 대상이 부재중일 때 본체로 복귀한 흔적이 반복 확인되었으며, 통신을 끈 채 장시간 체류하는 사례도 증가함. [행동 이상] 요원은 인간 사회의 우월성에 관한 교육 내용을 공개적으로 부정하지 않으나, 실제 보고서에서는 인간의 돌봄 행동과 사회적 유대를 반복 기록함. [판단] 임무 실패보다 대상과의 분리 가능성에 대한 회피가 행동을 좌우할 위험이 있음. 현재까지 조국에 대한 명시적 배신 의사는 확인되지 않음.'
     },
     tzhev: {
-      id:'TZ-044', name:'TZHEV', latin:'CAPTAIN / SPACE OPERATIONS',
+      id:'TZ-044', name:'TEZEV', latin:'CAPTAIN / SPACE OPERATIONS',
       rank:'대위', age:'21세', species:'테르노사 / 수컷', unit:'우주작전사령부',
       duty:'동물형 침투 요원', academy:'아르케온 199기 수석 졸업',
       photo:'images/tzhev.jpg',
@@ -566,7 +566,7 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
       secret:'[가족 관련 / T-02] 요원은 고향에 남아 있는 누나 티아레인의 치료법을 비공식적으로 조사 중임. 관련 자료를 확보하기 위해 임무 데이터 일부를 개인 검색에 활용한 정황이 있으나, 현장 임무를 직접 중단한 기록은 없음. [관계 관측 / 민간인 U-02] 대상 인간의 접촉과 돌봄에 대한 반응을 보고서에서 의도적으로 축소하는 경향이 있음. 쓰다듬기·음식 제공 등 단순한 접촉 뒤 변신 상태의 생리 반응이 바뀌는 사례가 반복 기록되었으며, 해당 반응을 부정하거나 장비 결함으로 분류함. [판단] 규율 위반보다 감정 노출을 더 큰 실패로 간주하는 경향이 강함. 압박을 높이면 대상 인간과의 관계를 단절하기보다 기록 자체를 은폐할 가능성이 있음.'
     },
     mern: {
-      id:'MR-089', name:'MERɲ', latin:'MAJOR / SPECIAL OPERATIONS',
+      id:'MR-089', name:'MÆRN', latin:'MAJOR / SPECIAL OPERATIONS',
       rank:'소령', age:'27세', species:'테르노사 / 수컷', unit:'특수작전사령부',
       duty:'인간형 침투 요원', academy:'아르케온 출신 장교',
       photo:'images/merɲ.jpg',
@@ -602,7 +602,7 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
     $('#statusline').textContent = 'SESSION ACTIVE / READ-ONLY';
     $('#sessionId').textContent = '07A-' + Math.random().toString(16).slice(2,6).toUpperCase();
     notify('인증 세션이 시작되었습니다. 일부 문서의 권한은 제한됩니다.');
-    showView('overview');
+    showView('observatory');
   }
 
   $('#loginBtn').addEventListener('click', () => {
