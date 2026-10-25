@@ -1175,7 +1175,8 @@ function sendMessage(){
 }
 function quickMessage(text){
   if(shutdownStarted||chatBusy)return;
-  document.getElementById('chatInput').value=text;sendMessage();
+  document.getElementById('chatInput').value='';
+  sendToAgent(text);
 }
 function sendToAgent(text){
   const id=activeChannel;
