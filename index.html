@@ -549,7 +549,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
         <div id="preLockScreen" class="pre-lock-screen">
           <div class="pre-lock-frame scanlines">
             <div class="pre-lock-emblem" aria-hidden="true">✦</div>
-            <div class="pre-lock-kicker">TEVION CENTRAL COMMAND // SECURE ACCESS</div>
+            <div class="pre-lock-kicker">TEVION CENTRAL COMMAND / SECURE ACCESS</div>
             <h2>PROJECT RE-EARTH</h2>
             <p class="pre-lock-copy">기밀 작전 자료에 접근하려면 인증을 완료하십시오.</p>
             <label class="pre-password-label" for="prePassword">ACCESS KEY <span>인증 키</span></label>
@@ -658,7 +658,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
             </div>
             <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
             <div class="chat-compose">
-              <textarea id="chatInput" rows="1" maxlength="300" placeholder="본부 메시지..." aria-label="현장 요원에게 보낼 메시지"></textarea>
+              <textarea id="chatInput" rows="1" maxlength="3" placeholder="사랑해" aria-label="사랑해만 입력 가능"></textarea>
               <button class="send-btn" id="sendBtn" onclick="sendMessage()">전송 ↗</button>
             </div>
           </div>
@@ -707,8 +707,8 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 <!-- P.R.E. 추가 기밀 -->
 <div id="preModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="preModalTitle" onclick="backdropClose(event)">
   <div class="modal pre-modal scanlines">
-    <div class="modal-top"><div><div class="kicker">P.R.E. // 추가 기밀</div><div class="modal-title">제한 지침</div></div><button class="close" onclick="closePREClassified()" aria-label="닫기">×</button></div>
-    <div class="pre-lock">⚠ 접근 권한 확인 완료 // 추가 제한 사항 적용</div>
+    <div class="modal-top"><div><div class="kicker"></div><div class="modal-title">제한 지침</div></div><button class="close" onclick="closePREClassified()" aria-label="닫기">×</button></div>
+    <div class="pre-lock">⚠ 접근 권한 확인 완료 / 추가 제한 사항 적용</div>
     <h2 id="preModalTitle">P.R.E. 현장 특수팀 운용 부칙</h2>
     <p>본 문서는 P.R.E. 현장 특수팀의 지구 파견 이후 행동 지침을 규정한다. 요원은 현지 신분을 유지하고, 본부의 승인 없이 작전 범위를 변경하지 않는다. 현지 생물과의 접촉 및 인간 사회 적응 과정에서 발생하는 예측 불가능한 행동은 작전 통제의 잠재적 위험으로 분류한다.</p>
     <div class="objectives">
@@ -1170,7 +1170,7 @@ function appendMessage(id,from,text){
 function sendMessage(){
   if(shutdownStarted||chatBusy)return;
   const input=document.getElementById('chatInput');
-  const text=input.value.trim();if(!text)return;
+  const text=input.value.trim();if(text!=='사랑해'){input.value='';return;}
   input.value='';sendToAgent(text);
 }
 function quickMessage(text){
@@ -1183,16 +1183,20 @@ function sendToAgent(text){
   chatBusy=true;
   document.getElementById('sendBtn').disabled=true;
   document.getElementById('chatInput').disabled=true;
-  const reply=responses[id][replyIndex[id]%responses[id].length];
-  replyIndex[id]++;
+  const loveReply={aex:'뭐야, 저도 사랑합니다~',tezev:null,mern:'... 상처에 왜 소금을 뿌리십니까.'}[id];
   setTimeout(()=>{
-    if(!shutdownStarted){appendMessage(id,'agent',reply);playBeep(id==='mern'?300:530,'sine',.09);}
+    if(!shutdownStarted&&loveReply){appendMessage(id,'agent',loveReply);playBeep(id==='mern'?300:530,'sine',.09);}
     chatBusy=false;
     document.getElementById('sendBtn').disabled=false;
     document.getElementById('chatInput').disabled=false;
     document.getElementById('chatInput').focus();
   },700+Math.random()*500);
 }
+document.getElementById('chatInput').addEventListener('input',e=>{
+  if(e.isComposing)return;
+  const value=e.target.value;
+  if(!['','사','사랑','사랑해'].includes(value))e.target.value='';
+});
 document.getElementById('chatInput').addEventListener('keydown',e=>{
   if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
 });
