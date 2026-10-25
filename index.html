@@ -226,6 +226,19 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .alien-console div{animation:fadein .15s}
 .shutdown .final-message{display:none;font-size:clamp(28px,7vw,60px);font-weight:900;letter-spacing:.13em;color:#fff;text-shadow:0 0 25px #ff1744,0 0 70px #ff1744;margin-top:28px;animation:finalJump .45s steps(2,end) infinite}
 .shutdown.jumpscare{background:#080006;animation:jumpFlash .13s steps(2,end) infinite}
+/* Persistent hostile-signal takeover */
+.shutdown.chaos-mode{background:#030005!important;overflow:hidden!important;cursor:crosshair}
+.shutdown.chaos-mode:before{inset:-50%;background:repeating-linear-gradient(0deg,#ff17441a 0 1px,transparent 1px 4px),repeating-linear-gradient(90deg,transparent 0 7px,#9d00ff12 8px 9px),radial-gradient(ellipse at center,#8b002d55,transparent 66%);animation:chaosStatic .075s steps(2,end) infinite}
+.shutdown.chaos-mode .shutdown-inner{width:100%;height:100%;display:grid;place-items:center;animation:jumpShake .085s steps(2,end) infinite}
+.shutdown.chaos-mode .warning-icon,.shutdown.chaos-mode h1,.shutdown.chaos-mode p,.shutdown.chaos-mode .coordinate-box,.shutdown.chaos-mode .alien-console,.shutdown.chaos-mode #alienFinal,.shutdown.chaos-mode small{display:none!important}
+.shutdown.chaos-mode .final-message{display:block!important;position:fixed;z-index:5;top:50%;left:50%;width:100vw;margin:0;padding:12px 0;text-align:center;font-size:clamp(42px,13vw,150px);line-height:.9;letter-spacing:-.07em;white-space:nowrap;color:#fff;background:#9b001f;text-shadow:5px 0 #00f0ff,-5px 0 #ff003c,0 0 22px #ff1744,0 0 80px #ff1744;animation:chaosMain .16s steps(2,end) infinite}
+.shutdown.chaos-mode .final-message:before{content:"⛔";display:block;font-size:clamp(32px,8vw,90px);margin-bottom:14px}
+.chaos-glyph{position:fixed;z-index:4;left:0;top:0;max-width:100vw;pointer-events:none;color:#ff164e;font:900 clamp(18px,4vw,48px)/1.1 var(--mono);text-shadow:0 0 9px #ff003c,3px 0 #00f0ff,-3px 0 #8f00ff;white-space:nowrap;animation:chaosFly var(--dur,1s) linear forwards}
+.chaos-scream{position:fixed;z-index:6;left:0;top:0;pointer-events:none;color:#fff;font:1000 clamp(22px,6vw,76px)/.9 var(--mono);text-shadow:0 0 12px red,0 0 32px #ff003c;animation:chaosScream .22s steps(2,end) infinite}
+@keyframes chaosStatic{0%{transform:translate(0,0)}25%{transform:translate(7px,-4px)}50%{transform:translate(-8px,5px)}75%{transform:translate(4px,8px)}100%{transform:translate(-3px,-7px)}}
+@keyframes chaosMain{0%,100%{transform:translate(-50%,-50%) rotate(-2deg) scale(1.02);filter:contrast(2)}25%{transform:translate(calc(-50% + 12px),calc(-50% - 8px)) rotate(2deg) scale(1.12);filter:hue-rotate(80deg) contrast(2.5)}50%{transform:translate(calc(-50% - 9px),calc(-50% + 7px)) rotate(-1deg) scale(.96);filter:invert(.15) contrast(3)}75%{transform:translate(calc(-50% + 5px),calc(-50% + 11px)) rotate(3deg) scale(1.08);filter:hue-rotate(-65deg) contrast(2.5)}}
+@keyframes chaosFly{0%{transform:translate(-15vw,-10vh) rotate(-18deg) scale(.6);opacity:0}8%{opacity:1}100%{transform:translate(var(--dx,110vw),var(--dy,100vh)) rotate(var(--rot,360deg)) scale(var(--scale,1.5));opacity:0}}
+@keyframes chaosScream{0%,100%{transform:translate(-50%,-50%) rotate(-5deg) scale(1);filter:contrast(2)}50%{transform:translate(calc(-50% + 10px),calc(-50% - 8px)) rotate(5deg) scale(1.15);filter:hue-rotate(100deg) contrast(3)}}
 .shutdown.jumpscare .shutdown-inner{border:0;background:transparent;box-shadow:none;animation:jumpShake .07s steps(2,end) infinite}
 .shutdown.jumpscare .warning-icon,.shutdown.jumpscare h1,.shutdown.jumpscare p,.shutdown.jumpscare .coordinate-box,.shutdown.jumpscare .alien-console,.shutdown.jumpscare #alienFinal,.shutdown.jumpscare small{display:none!important}
 .shutdown.jumpscare .final-message{display:block!important;position:relative;margin:0;padding:8vh 2vw;font-size:clamp(38px,12vw,130px);line-height:.95;letter-spacing:-.06em;color:#fff;background:#9b001f;text-shadow:4px 0 #00f0ff,-4px 0 #ff003c,0 0 18px #ff1744,0 0 65px #ff1744;transform:scale(1.04);animation:jumpText .11s steps(2,end) infinite}
@@ -720,6 +733,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
     <div class="alien-console" id="alienConsole"><div>⟊⟒⎍ ⟟⎐⟒ ⌰⍜☊⏃⌰ ⏁⟒⍀⋔⟟⋏⏃⌰...</div></div>
     <div id="alienFinal" class="alien-final">⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅ ⌰⍜☊⏃⌰ ⏁⟒⍀⋔⟟⋏⏃⌰</div>
     <div id="finalMessage" class="final-message">GET OUT HUMAN</div>
+    <div id="chaosLayer" aria-hidden="true"></div>
     <small id="shutdownHint">연결 불안정 // 대기하십시오</small>
   </div>
 </div>
@@ -1166,7 +1180,12 @@ function triggerShutdownSequence(){
   setTimeout(()=>playBeep(1750,'square',.65,.12),90);
   setTimeout(()=>playBeep(110,'sawtooth',.9,.15),260);
   setTimeout(()=>playBeep(2100,'square',.45,.1),520);
-  setTimeout(()=>overlay.classList.remove('jumpscare'),1250);
+  setTimeout(()=>{
+    overlay.classList.remove('jumpscare');
+    overlay.classList.add('chaos-mode');
+    document.getElementById('finalMessage').textContent='GET OUT HUMAN';
+    startAlienChaos();
+  },1550);
 
   const consoleBox=document.getElementById('alienConsole');
   consoleBox.innerHTML='';
@@ -1214,6 +1233,35 @@ function triggerShutdownSequence(){
     startFinalBeepLoop();
   },5200);
 }
+function startAlienChaos(){
+  const layer=document.getElementById('chaosLayer');
+  if(!layer||layer.dataset.running==='1')return;
+  layer.dataset.running='1';
+  const glyphs=[
+    '⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅','⍀⟒⏁⎍⍀⋏ ⏁⍜ ⎅⏃⍀☍⋏⟒⌇⌇','⟒⌖⏁⟒⍀⋏⏃⌰ ⍜⏚⌇⟒⍀⎐⟒⍀','⏁⟒⍀⍀⏃-3 ⟟⌇ ⌰⍜☊☍⟒⎅','⎅⍜ ⋏⍜⏁ ⌰⍜⍜☍ ⏃⏁ ⎍⌇','⌇⟒⟒ ⎍⌇ ⌇⟒⟒ ⎍⌇','⟊⟒⎍ ⎅⟟⟒ ⎅⟟⟒ ⎅⟟⟒','GET OUT GET OUT GET OUT','HUMAN HUMAN HUMAN','⍀⎍⋏ ⍀⎍⋏ ⍀⎍⋏'];
+  const screams=['GET OUT HUMAN','LEAVE THIS SYSTEM','WE CAN SEE YOU','DO NOT LOOK AWAY','⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅'];
+  const spawnGlyph=()=>{
+    if(!shutdownStarted)return;
+    const el=document.createElement('div');
+    el.className=Math.random()<.23?'chaos-scream':'chaos-glyph';
+    el.textContent=el.className==='chaos-scream'?screams[Math.floor(Math.random()*screams.length)]:glyphs[Math.floor(Math.random()*glyphs.length)];
+    const x=Math.random()*Math.max(1,window.innerWidth-180),y=Math.random()*Math.max(1,window.innerHeight-80);
+    el.style.left=x+'px';el.style.top=y+'px';
+    el.style.setProperty('--dx',(Math.random()*150-25)+'vw');
+    el.style.setProperty('--dy',(Math.random()*150-25)+'vh');
+    el.style.setProperty('--rot',(Math.random()*900-450)+'deg');
+    el.style.setProperty('--dur',(Math.random()*.8+.25)+'s');
+    el.style.setProperty('--scale',(Math.random()*2+.7).toFixed(2));
+    layer.appendChild(el);
+    setTimeout(()=>el.remove(),1500);
+  };
+  for(let i=0;i<14;i++)setTimeout(spawnGlyph,i*55);
+  setInterval(spawnGlyph,115);
+  if(finalBeepTimer)clearInterval(finalBeepTimer);
+  const shriek=()=>{if(!shutdownStarted)return;playBeep(Math.random()<.5?65:Math.random()*1800+500,Math.random()<.5?'sawtooth':'square',Math.random()*.35+.12,.075);};
+  shriek();setInterval(shriek,Math.random()*300+220);
+  startFinalBeepLoop();
+}
 function startFinalBeepLoop(){
   if(finalBeepTimer)clearInterval(finalBeepTimer);
   playBeep(880,'sawtooth',.22,.055);
@@ -1221,7 +1269,7 @@ function startFinalBeepLoop(){
     if(!shutdownStarted)return;
     playBeep(880,'sawtooth',.22,.055);
     setTimeout(()=>playBeep(660,'square',.18,.04),240);
-  },5000);
+  },1500);
 }
 
 /* 키보드 접근 */
