@@ -331,6 +331,12 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 .pre-unlock-button:hover{filter:brightness(1.3);transform:scale(1.06);box-shadow:0 0 20px #c7a8f0a0,0 0 38px #a9d9d65c}
 .pre-unlock-button>span{position:absolute;top:3px;right:5px;font-size:12px;color:#e8fffc;text-shadow:0 0 8px #d8fffb;animation:sparkTwinkle 1.2s ease-in-out infinite}
 .pre-unlock-button.unlocking{opacity:.75;animation:none}
+/* Keep the access control deliberately understated */
+.pre-unlock-button{flex-basis:38px;width:38px;height:38px;border:1px solid #5a4b67;border-radius:7px;background:#17131e;color:#b7a9c7;font-size:17px;box-shadow:none;animation:none}
+.pre-unlock-button:before,.pre-unlock-button>span{display:none!important}
+.pre-unlock-button:hover{filter:brightness(1.12);transform:none;box-shadow:none;border-color:#88749c}
+.pre-unlock-button.unlocking{opacity:1;animation:none}
+@media(max-width:520px){.pre-unlock-button{flex-basis:34px;width:34px;height:34px;font-size:15px}}
 @keyframes preButtonPulse{0%,100%{box-shadow:0 0 8px #c7a8f04d,0 0 18px #a9d9d61c;border-color:#a792d9}50%{box-shadow:0 0 18px #c7a8f0b0,0 0 34px #a9d9d66b;border-color:#e2d2ff}}
 @keyframes sparkTwinkle{0%,100%{opacity:.4;transform:scale(.8) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(45deg)}}
 .pre-warning-ticker{margin-top:16px;overflow:hidden;border-top:1px solid #d39d5b40;border-bottom:1px solid #d39d5b40;background:linear-gradient(90deg,#2a171a,#171018,#2a171a);color:#e6b6a0;font:10px/1.8 var(--mono);letter-spacing:.04em;white-space:nowrap}
@@ -873,6 +879,19 @@ function resetToLanding(){
 function switchTab(name){
   if(shutdownStarted)return;
   playBeep(600,'sine',.06);
+  if(name!=='pre'){
+    const lock=document.getElementById('preLockScreen');
+    const content=document.getElementById('preContent');
+    const button=lock?.querySelector('.pre-unlock-button');
+    if(lock&&content){
+      lock.classList.remove('hidden');
+      content.classList.add('hidden');
+      content.classList.remove('pre-content-enter');
+      const key=document.getElementById('prePassword');
+      if(key)key.value='PRE-09-RE-EARTH';
+      if(button){button.classList.remove('unlocking');button.innerHTML='🔒';}
+    }
+  }
   document.querySelectorAll('.tab-content').forEach(el=>el.classList.add('hidden'));
   document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
   document.getElementById('tab-'+name).classList.remove('hidden');
@@ -896,15 +915,12 @@ function unlockPRE(){
   playBeep(740,'sine',.08);
   const lock=document.getElementById('preLockScreen');
   const content=document.getElementById('preContent');
-  const button=lock.querySelector('.pre-unlock-button');
-  button.classList.add('unlocking');
-  button.innerHTML='인증 확인 중 <span aria-hidden="true">···</span>';
   setTimeout(()=>{
     lock.classList.add('hidden');
     content.classList.remove('hidden');
     content.classList.add('pre-content-enter');
     playBeep(980,'triangle',.12,.04);
-  },420);
+  },180);
 }
 
 function switchResearchPage(page){
