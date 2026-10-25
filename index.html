@@ -1183,7 +1183,7 @@ function sendToAgent(text){
   chatBusy=true;
   document.getElementById('sendBtn').disabled=true;
   document.getElementById('chatInput').disabled=true;
-  const loveReply={aex:'뭐야, 저도 사랑합니다~',tezev:null,mern:'... 상처에 왜 소금을 뿌리십니까.'}[id];
+  const loveReply={aex:'뭐야, 저도 사랑합니다~',tezev:null,mern:'... 왜 상처에 소금을 뿌리십니까.'}[id];
   setTimeout(()=>{
     if(!shutdownStarted&&loveReply){appendMessage(id,'agent',loveReply);playBeep(id==='mern'?300:530,'sine',.09);}
     chatBusy=false;
