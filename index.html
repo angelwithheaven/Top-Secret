@@ -221,10 +221,12 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .summary-state{font:8px var(--mono);letter-spacing:.06em;color:var(--card-accent);border:1px solid color-mix(in srgb,var(--card-accent) 30%,transparent);border-radius:4px;padding:5px 6px;white-space:nowrap}
 .summary-card h3{font:700 12px/1.6 var(--sans);letter-spacing:-.02em;color:#f1e8f8;margin:0 0 9px;padding-bottom:10px;border-bottom:1px solid #ffffff12}
 .summary-card p{font-size:11px;line-height:1.95;color:#c8bed4}
-.summary-note{position:relative;display:grid;grid-template-columns:90px minmax(0,1fr);gap:14px;align-items:start;margin-top:14px;padding:17px;border:1px solid #ff8eaa50;border-radius:11px;background:linear-gradient(105deg,#361725b8,#1a101d 75%);color:#e8d5df;font-size:11px;line-height:1.9;box-shadow:inset 3px 0 #ff8eaa}
-.summary-note:before{content:"ASSESSMENT";font:9px/1.8 var(--mono);letter-spacing:.08em;color:#ff9eb5}
+.summary-note{position:relative;display:flex;flex-direction:column;gap:2px;align-items:flex-start;margin-top:14px;padding:13px 17px;border:1px solid #ff8eaa50;border-radius:11px;background:linear-gradient(105deg,#361725b8,#1a101d 75%);color:#e8d5df;font-size:10px;line-height:1.65;box-shadow:inset 3px 0 #ff8eaa}
+.summary-note>span:first-child{font-size:11px;line-height:1.5;font-weight:700;color:#ff9eb5}
+.summary-note>span:last-child{font-size:10px;line-height:1.5;white-space:nowrap;letter-spacing:-.035em}
+.summary-note:before{display:none}
 @keyframes summaryCardIn{from{opacity:0;transform:translateY(12px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
-@media(max-width:640px){.summary-grid{grid-template-columns:1fr}.summary-card{min-height:0;padding:15px}.summary-card-top{margin-bottom:-3px}.summary-note{grid-template-columns:1fr;gap:5px}}
+@media(max-width:640px){.summary-grid{grid-template-columns:1fr}.summary-card{min-height:0;padding:15px}.summary-card-top{margin-bottom:-3px}.summary-note{gap:3px;padding:12px}.summary-note>span:last-child{font-size:8px;letter-spacing:-.055em}}
 /* 보안 침해 */
 .shutdown{position:fixed;inset:0;z-index:100;overflow:hidden;background:#030207;display:flex;align-items:center;justify-content:center;padding:22px;text-align:center;font-family:var(--mono)}
 .shutdown:before{content:"";position:absolute;inset:-30%;background:repeating-linear-gradient(0deg,transparent 0 3px,#ff174408 4px),radial-gradient(ellipse at center,#42102755,transparent 60%);animation:staticNoise .16s infinite}
