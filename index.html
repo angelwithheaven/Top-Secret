@@ -251,8 +251,11 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .shutdown.chaos-mode .final-message:before{display:none!important;content:none!important}
 .shutdown.chaos-mode .final-message{background:transparent!important;animation:chaosPulse .72s ease-in-out infinite!important;text-shadow:0 0 12px #ff1744,0 0 34px #ff1744,0 0 75px #ff003c!important}
 @keyframes chaosPulse{0%,100%{transform:translate(-50%,-50%) scale(.94);opacity:.82;text-shadow:0 0 12px #ff1744,0 0 28px #ff1744}50%{transform:translate(-50%,-50%) scale(1.08);opacity:1;text-shadow:0 0 20px #ff1744,0 0 55px #ff1744,0 0 100px #ff003c}}
-.alien-rain-column{position:fixed;z-index:1;top:0;pointer-events:none;width:max-content;max-width:30vw;overflow-wrap:anywhere;white-space:pre-wrap;color:#ff164e;font:900 var(--rain-size,18px)/1.4 var(--mono);letter-spacing:.16em;opacity:var(--rain-opacity,.6);text-shadow:0 0 8px #ff003c,0 0 18px #8f00ff;writing-mode:vertical-rl;animation:alienRain var(--rain-duration,3s) linear infinite alternate}
-@keyframes alienRain{from{transform:translateY(calc(-1 * var(--rain-distance,100vh)))}to{transform:translateY(var(--rain-distance,100vh))}}
+.alien-rain-column{position:absolute;left:0;width:max-content;min-width:120vw;pointer-events:none;white-space:nowrap;color:#ff164e;font:900 var(--rain-size,18px)/1.15 var(--mono);letter-spacing:.18em;opacity:var(--rain-opacity,.6);text-shadow:0 0 8px #ff003c,0 0 18px #8f00ff;will-change:transform;animation:alienRain var(--rain-duration,3s) linear infinite alternate}
+@keyframes alienRain{from{transform:translate3d(0,calc(-1 * var(--rain-distance,100vh)),0)}to{transform:translate3d(0,var(--rain-distance,100vh),0)}}
+#chaosLayer{position:fixed;inset:0;z-index:1;overflow:hidden;pointer-events:none}
+.shutdown.chaos-mode .shutdown-inner{pointer-events:none}
+.shutdown.chaos-mode .final-message{pointer-events:none}
 .shutdown.chaos-mode .final-message{z-index:8}
 .chaos-glyph{position:fixed;z-index:4;left:0;top:0;max-width:100vw;pointer-events:none;color:#ff164e;font:900 clamp(18px,4vw,48px)/1.1 var(--mono);text-shadow:0 0 9px #ff003c,3px 0 #00f0ff,-3px 0 #8f00ff;white-space:nowrap;animation:chaosFly var(--dur,1s) linear forwards}
 .chaos-scream{position:fixed;z-index:6;left:0;top:0;pointer-events:none;color:#fff;font:1000 clamp(22px,6vw,76px)/.9 var(--mono);text-shadow:0 0 12px red,0 0 32px #ff003c;animation:chaosScream .22s steps(2,end) infinite}
@@ -723,7 +726,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 <!-- 교신 이상 징후 -->
 <div id="summaryBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="summaryTitle" onclick="backdropClose(event)">
   <div class="modal summary-modal">
-    <div class="modal-top"><div><div class="kicker">통신 기록 / 내부 검토</div><div class="modal-title" id="summaryTitle">교신 이상 징후 요약</div></div><button class="close" onclick="closeCommunicationSummary()" aria-label="닫기">×</button></div>
+    <div class="modal-top"><div><div class="modal-title" id="summaryTitle">교신 이상 징후 요약</div></div><button class="close" onclick="closeCommunicationSummary()" aria-label="닫기">×</button></div>
     <div class="summary-grid">
       <article class="summary-card"><div class="summary-card-top"><span class="summary-number">01</span><span class="summary-state">REPORT DELAY</span></div><div><h3>AEX / 보고 지연</h3><p>로스앤젤레스에서 서울로 이동한 경위에 대한 보고가 지연됨. 현지 인간과 반복적으로 접촉하고 있으며, 해당 행동을 정보 수집의 일부라고 주장함. 현지 음식 섭취량과 동물화 상태의 신체 변화에 대한 추가 관측이 필요함.</p></div></article>
       <article class="summary-card"><div class="summary-card-top"><span class="summary-number">02</span><span class="summary-state">ORDERS IGNORED</span></div><div><h3>TEZEV / 지시 불이행</h3><p>감시 장비 파괴 및 반복적인 응답 거부. 현지 동물 신분으로 잠입 중이라고 보고했으며, 가족 관련 자료 확인을 요구함. 가족의 치료 문제가 작전 지시보다 우선될 가능성이 있음.</p></div></article>
@@ -1206,19 +1209,11 @@ function triggerShutdownSequence(){
   term.classList.add('glitch-anim');
   document.getElementById('systemStatus').textContent='방화벽 침해';
   overlay.classList.remove('hidden');
-  overlay.classList.add('jumpscare');
+  overlay.classList.remove('jumpscare','chaos-mode','final');
   document.getElementById('finalMessage').textContent='GET OUT HUMAN';
-  playAlarm();
-  playBeep(48,'sawtooth',1.1,.16);
-  setTimeout(()=>playBeep(1750,'square',.65,.12),90);
-  setTimeout(()=>playBeep(110,'sawtooth',.9,.15),260);
-  setTimeout(()=>playBeep(2100,'square',.45,.1),520);
-  setTimeout(()=>{
-    overlay.classList.remove('jumpscare');
-    overlay.classList.add('chaos-mode');
-    document.getElementById('finalMessage').textContent='GET OUT HUMAN';
-    startAlienChaos();
-  },1550);
+  document.getElementById('shutdownHint').textContent='역추적 프로세스 실행 중 // 연결을 종료하지 마십시오';
+  initAudio();
+  playBeep(220,'sine',.12,.025);
 
   const consoleBox=document.getElementById('alienConsole');
   consoleBox.innerHTML='';
@@ -1241,30 +1236,38 @@ function triggerShutdownSequence(){
   traceStatus.textContent='추적 시작';
 
   const progressTimer=setInterval(()=>{
-    progress+=Math.random()*8+2;
-    if(progress>=100){progress=100;clearInterval(progressTimer);}
+    progress=Math.min(100,progress+Math.random()*4+1.8);
     tracePercent.textContent=progress.toFixed(2)+'%';
     traceBar.style.width=progress+'%';
-    if(progress>25)tracePlanet.textContent='태양계';
-    if(progress>48)tracePlanet.textContent='TERRA-3';
-    if(progress>65)traceStatus.textContent='좌표 고정 중';
-    if(progress>85)traceStatus.textContent='관측자 식별 완료';
-    if(progress===100){tracePlanet.textContent='지구 / TERRA-3';traceStatus.textContent='좌표 고정 완료';}
-  },160);
-
-  alienLines.forEach((line,i)=>setTimeout(()=>{
-    const div=document.createElement('div');
-    div.textContent='> '+line;consoleBox.appendChild(div);
-    consoleBox.scrollTop=consoleBox.scrollHeight;
-    playBeep(160+i*35,'square',.07,.025);
-  },i*550));
-
-  setTimeout(()=>{
-    term.classList.remove('glitch-anim');term.style.filter='brightness(.2)';
-    overlay.classList.add('final');playAlarm();
-    document.getElementById('shutdownHint').textContent='⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅';
-    startFinalBeepLoop();
-  },5200);
+    if(progress>18){tracePlanet.textContent='태양계 / 태양 기준점 확인';traceStatus.textContent='천체 위치 역산 중';}
+    if(progress>38){tracePlanet.textContent='지구 / TERRA-3';traceStatus.textContent='행성 신호 고정 중';}
+    if(progress>60){traceTarget.textContent='대한민국 · 서울특별시';traceStatus.textContent='지표 좌표 정밀 계산';}
+    if(progress>82){traceTarget.textContent='대한민국 서울특별시 (37.5665° N, 126.9780° E)';traceStatus.textContent='좌표 수렴 중';}
+    if(progress===100){
+      clearInterval(progressTimer);
+      tracePlanet.textContent='지구 / TERRA-3';
+      traceTarget.textContent='대한민국 서울특별시 (37.5665° N, 126.9780° E)';
+      traceStatus.textContent='좌표 고정 완료';
+      document.getElementById('shutdownHint').textContent='신호 발신지 특정 완료 // 서울특별시';
+      alienLines.forEach((line,i)=>setTimeout(()=>{
+        const div=document.createElement('div');
+        div.textContent='> '+line;consoleBox.appendChild(div);
+        consoleBox.scrollTop=consoleBox.scrollHeight;
+        playBeep(160+i*35,'square',.07,.025);
+      },i*420));
+      setTimeout(()=>{
+        overlay.classList.add('chaos-mode');
+        term.classList.add('glitch-anim');
+        document.getElementById('shutdownHint').textContent='⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅';
+        playAlarm();
+        playBeep(48,'sawtooth',1.1,.16);
+        setTimeout(()=>playBeep(1750,'square',.65,.12),90);
+        setTimeout(()=>playBeep(110,'sawtooth',.9,.15),260);
+        setTimeout(()=>playBeep(2100,'square',.45,.1),520);
+        startAlienChaos();
+      },3000);
+    }
+  },180);
 }
 function startAlienChaos(){
   const layer=document.getElementById('chaosLayer');
@@ -1272,29 +1275,30 @@ function startAlienChaos(){
   layer.dataset.running='1';
   const glyphs=[
     '⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅','⍀⟒⏁⎍⍀⋏ ⏁⍜ ⎅⏃⍀☍⋏⟒⌇⌇','⟒⌖⏁⟒⍀⋏⏃⌰ ⍜⏚⌇⟒⍀⎐⟒⍀','⏁⟒⍀⍀⏃-3 ⟟⌇ ⌰⍜☊☍⟒⎅','⎅⍜ ⋏⍜⏁ ⌰⍜⍜☍ ⏃⏁ ⎍⌇','⌇⟒⟒ ⎍⌇ ⌇⟒⟒ ⎍⌇','⟊⟒⎍ ⎅⟟⟒ ⎅⟟⟒ ⎅⟟⟒','GET OUT GET OUT GET OUT','HUMAN HUMAN HUMAN','⍀⎍⋏ ⍀⎍⋏ ⍀⎍⋏'];
-  const columns=[];
-  const makeColumn=(direction)=>{
+  const rowCount=Math.ceil(window.innerHeight/34)+16;
+  const rows=[];
+  const makeRow=(i)=>{
     const el=document.createElement('div');
     el.className='alien-rain-column';
-    el.textContent=Array.from({length:18},()=>glyphs[Math.floor(Math.random()*glyphs.length)]).join('  /  ');
-    el.style.left=(Math.random()*105-3)+'vw';
-    el.style.setProperty('--rain-duration',(Math.random()*3+2)+'s');
-    el.style.setProperty('--rain-distance',(direction*(window.innerHeight+900))+'px');
-    el.style.setProperty('--rain-size',(Math.random()*9+14)+'px');
-    el.style.setProperty('--rain-opacity',(Math.random()*.45+.35).toFixed(2));
-    layer.appendChild(el);columns.push(el);
+    el.textContent=Array.from({length:18},()=>glyphs[Math.floor(Math.random()*glyphs.length)]).join('   ⟊   ');
+    el.style.top=(i*34-280)+'px';
+    el.style.setProperty('--rain-duration',(Math.random()*2.2+1.1)+'s');
+    el.style.setProperty('--rain-distance',(window.innerHeight*.85+250)+'px');
+    el.style.setProperty('--rain-size',(Math.random()*9+13)+'px');
+    el.style.setProperty('--rain-opacity',(Math.random()*.36+.3).toFixed(2));
+    el.style.animationDirection=i%2===0?'alternate':'alternate-reverse';
+    layer.appendChild(el);rows.push(el);
   };
-  for(let i=0;i<24;i++)makeColumn(i%2===0?1:-1);
-  setInterval(()=>{
-    if(!shutdownStarted)return;
-    columns.forEach((el,i)=>{
-      el.textContent=Array.from({length:18},()=>glyphs[Math.floor(Math.random()*glyphs.length)]).join('  /  ');
-      el.style.left=(Math.random()*105-3)+'vw';
-      el.style.setProperty('--rain-duration',(Math.random()*3+2)+'s');
-      el.style.setProperty('--rain-distance',((i%2===0?1:-1)*(window.innerHeight+900))+'px');
+  for(let i=0;i<rowCount;i++)makeRow(i);
+  const refill=setInterval(()=>{
+    if(!shutdownStarted){clearInterval(refill);return;}
+    rows.forEach((el,i)=>{
+      el.textContent=Array.from({length:18},()=>glyphs[Math.floor(Math.random()*glyphs.length)]).join('   ⟊   ');
+      el.style.setProperty('--rain-duration',(Math.random()*2.2+1.1)+'s');
+      el.style.animationDirection=i%2===0?'alternate':'alternate-reverse';
       el.style.animation='none';void el.offsetHeight;el.style.animation='';
     });
-  },1200);
+  },850);
   const spawnGlyph=()=>{
     if(!shutdownStarted)return;
     const el=document.createElement('div');
@@ -1309,11 +1313,14 @@ function startAlienChaos(){
     el.style.setProperty('--scale',(Math.random()*2+.7).toFixed(2));
     layer.appendChild(el);setTimeout(()=>el.remove(),1500);
   };
-  for(let i=0;i<12;i++)setTimeout(spawnGlyph,i*55);
-  setInterval(spawnGlyph,180);
+  for(let i=0;i<16;i++)setTimeout(spawnGlyph,i*40);
+  setInterval(spawnGlyph,125);
   if(finalBeepTimer)clearInterval(finalBeepTimer);
-  const shriek=()=>{if(!shutdownStarted)return;playBeep(Math.random()<.5?65:Math.random()*1800+500,Math.random()<.5?'sawtooth':'square',Math.random()*.35+.12,.075);};
-  shriek();setInterval(shriek,Math.random()*300+220);
+  const shriek=()=>{
+    if(!shutdownStarted)return;
+    playBeep(Math.random()<.55?55+Math.random()*55:Math.random()*2400+250,Math.random()<.55?'sawtooth':'square',Math.random()*.42+.16,.095);
+  };
+  shriek();setInterval(shriek,Math.random()*160+100);
   startFinalBeepLoop();
 }
 function startFinalBeepLoop(){
