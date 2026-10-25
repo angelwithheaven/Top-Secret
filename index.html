@@ -453,7 +453,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
         <div class="brand-icon" aria-hidden="true">✦</div>
         <div>
           <div class="brand-title">TEVION UNIFIED MILITARY</div>
-          <div class="brand-sub">하버트 노드 07 // 암호화 연결</div>
+          <div class="brand-sub">하버트 노드 07 / 암호화 연결</div>
         </div>
       </div>
       <div class="top-actions">
@@ -566,7 +566,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 
         <div id="preContent" class="hidden">
           <div class="section-top">
-            <div><h2 class="heading">PROJECT RE-EARTH</h2><p style="margin-top:7px">지구 침투·조사 계획 // 최고 기밀</p></div>
+            <div><h2 class="heading">PROJECT RE-EARTH</h2><p style="margin-top:7px">지구 침투·조사 계획 / 최고 기밀</p></div>
             <span class="tag red">접근 승인</span>
           </div>
 
@@ -699,7 +699,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 <!-- 인사 기록 창 -->
 <div id="agentModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="backdropClose(event)">
   <div class="modal scanlines">
-    <div class="modal-top"><div><div class="kicker">인사 기록 // 기밀</div><div class="modal-title" id="modalTitle">요원 인사 기록</div></div><button class="close" onclick="closeAgentModal()" aria-label="닫기">×</button></div>
+    <div class="modal-top"><div><div class="kicker">인사 기록 / 기밀</div><div class="modal-title" id="modalTitle">요원 인사 기록</div></div><button class="close" onclick="closeAgentModal()" aria-label="닫기">×</button></div>
     <div id="modalContent"></div>
   </div>
 </div>
@@ -1011,7 +1011,7 @@ function openAgentModal(id){
   if(shutdownStarted)return;
   playBeep(850,'sine',.1);
   const d=agentData[id];activeModalId=id;
-  document.getElementById('modalTitle').textContent=d.name+' // '+d.korean;
+  document.getElementById('modalTitle').textContent=d.name+' / '+d.korean;
   document.getElementById('modalContent').innerHTML=`
     <div class="modal-person">
       <div class="modal-avatar"><img src="${d.image}" alt="${escapeHTML(d.name)} 프로필 사진" onerror="this.style.display='none';this.parentElement.textContent='${d.symbol}'"></div>
@@ -1058,7 +1058,7 @@ function revealSecret(id){
   playBeep(140,'sawtooth',.25,.05);
   closeAgentModalForShutdown();
   document.getElementById('secretTitle').textContent=d.secretTitle;
-  document.getElementById('secretSubtitle').textContent=`대상: ${d.name} // 열람 제한 // 인사 기록 ${id.toUpperCase()}`;
+  document.getElementById('secretSubtitle').textContent=`대상: ${d.name} / 열람 제한 / 인사 기록 ${id.toUpperCase()}`;
   document.getElementById('secretBody').innerHTML=d.secretSections.map(s=>`
     <article class="secret-section">
       <div class="secret-index">${s.n}</div>
@@ -1262,7 +1262,7 @@ function triggerShutdownSequence(){
       tracePlanet.textContent='지구 / TERRA-3';
       traceTarget.textContent='대한민국 서울특별시 (37.5665° N, 126.9780° E)';
       traceStatus.textContent='좌표 고정 완료';
-      document.getElementById('shutdownHint').textContent='신호 발신지 특정 완료 // 서울특별시';
+      document.getElementById('shutdownHint').textContent='신호 발신지 특정 완료 / 서울특별시';
       alienLines.forEach((line,i)=>setTimeout(()=>{
         const div=document.createElement('div');
         div.textContent='> '+line;consoleBox.appendChild(div);
