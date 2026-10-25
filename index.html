@@ -622,19 +622,19 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
         <div class="agent-grid">
           <article onclick="openAgentModal('aex')" id="card-aex" class="agent-card" tabindex="0" role="button" aria-label="AEX 인사 기록" onkeydown="cardKey(event,'aex')">
             <span class="tag cyan rank-badge">소위</span>
-            <div class="avatar has-photo"><img class="avatar-photo" src="https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/KakaoTalk_20261025_204805001_01.png" alt="AEX 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">◈</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <div class="avatar has-photo"><img class="avatar-photo" src="https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/KakaoTalk_20261025_204805001_01.png" alt="AEX 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">◈</span></div>
             <h3 class="agent-name">AEX</h3><p class="agent-sub">우주작전사령부 · 현장 관측 요원</p>
             <div class="card-foot"><span>인사 기록 001</span><span id="status-aex" class="status">미열람</span></div>
           </article>
           <article onclick="openAgentModal('tezev')" id="card-tezev" class="agent-card" tabindex="0" role="button" aria-label="TEZEV 인사 기록" onkeydown="cardKey(event,'tezev')">
             <span class="tag violet rank-badge">대위</span>
-            <div class="avatar has-photo" style="background:radial-gradient(ellipse at 50% 34%,#4a3b71,#20182e 48%,#15111d 78%)"><img class="avatar-photo" src="https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/tezev.jpg" alt="TEZEV 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">⌁</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <div class="avatar has-photo" style="background:radial-gradient(ellipse at 50% 34%,#4a3b71,#20182e 48%,#15111d 78%)"><img class="avatar-photo" src="https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/tezev.jpg" alt="TEZEV 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">⌁</span></div>
             <h3 class="agent-name">TEZEV</h3><p class="agent-sub">우주작전사령부 · 잠입 정보 요원</p>
             <div class="card-foot"><span>인사 기록 002</span><span id="status-tezev" class="status">미열람</span></div>
           </article>
           <article onclick="openAgentModal('mern')" id="card-mern" class="agent-card" tabindex="0" role="button" aria-label="Mern 인사 기록" onkeydown="cardKey(event,'mern')">
             <span class="tag red rank-badge">소령</span>
-            <div class="avatar has-photo" style="background:radial-gradient(ellipse at 50% 34%,#59405e,#241827 45%,#15111d 78%)"><img class="avatar-photo" src="https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/KakaoTalk_20261025_204805001.png" alt="Mern 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">⟡</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <div class="avatar has-photo" style="background:radial-gradient(ellipse at 50% 34%,#59405e,#241827 45%,#15111d 78%)"><img class="avatar-photo" src="https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/KakaoTalk_20261025_204805001.png" alt="Mern 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">⟡</span></div>
             <h3 class="agent-name">Mern</h3><p class="agent-sub">특수작전사령부 · 특수 침투 요원</p>
             <div class="card-foot"><span>인사 기록 003</span><span id="status-mern" class="status">미열람</span></div>
           </article>
@@ -1053,7 +1053,7 @@ function openAgentModal(id){
       if(warningText)warningText.textContent='경고: 전체 인사 기록 열람 완료 · 보안 대응 프로토콜이 대기 중입니다.';
       if(badge){badge.classList.remove('violet');badge.classList.add('red');badge.textContent='경고 · 3 / 3';}
     }else if(warningText){
-      warningText.textContent=`열람 기록 동기화 완료 · 현재 ${viewedAgents.size} / 3건 확인.`;
+      warningText.textContent='';
     }
   }
 }
