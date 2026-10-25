@@ -305,7 +305,8 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 
 /* P.R.E. secure entry and mission dossier redesign */
 .pre-lock-screen{min-height:clamp(420px,65vh,660px);display:grid;place-items:center;padding:clamp(12px,3vw,30px);background:radial-gradient(ellipse at 50% 42%,#38214a55,transparent 48%),linear-gradient(145deg,#0b0911,#100d18 58%,#0b1015);border:1px solid #b8a2d329;border-radius:14px;overflow:hidden}
-.pre-lock-frame{position:relative;width:min(100%,620px);padding:clamp(25px,5vw,48px);border:1px solid #a78fc34d;border-radius:13px;background:linear-gradient(145deg,#171220f5,#0d0b12f7);box-shadow:0 25px 80px #0008,inset 0 0 45px #a18ad009;text-align:center;overflow:hidden}
+.pre-lock-frame{position:relative;width:min(100%,620px);padding:clamp(25px,5vw,48px);border:1px solid #a78fc34d;border-radius:13px;background:linear-gradient(145deg,#171220f5,#0d0b12f7);box-shadow:0 25px 80px #0008,inset 0 0 45px #a18ad009;text-align:center;overflow:hidden;animation:preFramePulse 3.2s ease-in-out infinite}
+@keyframes preFramePulse{0%,100%{transform:translateY(0);border-color:#a78fc34d;box-shadow:0 25px 80px #0008,inset 0 0 45px #a18ad009,0 0 10px #bca2e10a}50%{transform:translateY(-3px);border-color:#c7a8f0b0;box-shadow:0 25px 80px #0008,inset 0 0 55px #a18ad01a,0 0 28px #c7a8f055,0 0 55px #a9d9d61c}}
 .pre-lock-frame:before,.pre-lock-frame:after{display:none}
 .pre-lock-emblem{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 22px;border:1px solid #a992d96b;border-radius:50%;color:#d5c3ef;font-size:25px;box-shadow:0 0 32px #9a78d31c}
 .pre-lock-kicker{font:10px var(--mono);letter-spacing:.13em;line-height:1.8;color:#a99ac5}
@@ -313,14 +314,20 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 .pre-lock-copy{font-size:12px;line-height:1.9;color:var(--muted);margin:0 auto 28px}
 .pre-password-label{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;text-align:left;font:10px var(--mono);letter-spacing:.08em;color:#cbbbe1}
 .pre-password-label span{font-family:inherit;color:var(--muted);letter-spacing:0}
-.pre-password-wrap{display:flex;align-items:center;gap:11px;min-width:0;padding:0 14px;border:1px solid #9b8ac24a;border-radius:8px;background:#08070c}
-.pre-password-icon{font-size:20px;color:#b9a0dc}
-.pre-password-wrap input{width:100%;min-width:0;padding:15px 0;border:0;outline:0;background:transparent;color:#f0e8fb;font:16px var(--mono);letter-spacing:.18em}
-.pre-password-state{flex-shrink:0;font:8px var(--mono);letter-spacing:.05em;color:#91d3d1}
-.pre-unlock-button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-top:12px;padding:15px 17px;border:1px solid #a792d98c;border-radius:8px;background:linear-gradient(100deg,#352542,#1a2d31);color:#f5edf9;font-size:12px;font-weight:700;text-align:left;transition:filter .2s,transform .2s}
-.pre-unlock-button:hover{filter:brightness(1.2);transform:translateY(-1px)}
-.pre-unlock-button span{font-size:18px;color:#aee4df}
-.pre-unlock-button.unlocking{opacity:.75}
+.pre-password-wrap{display:flex;align-items:center;gap:10px;min-width:0;padding:5px;border:1px solid #9b8ac26b;border-radius:10px;background:#08070c;box-shadow:inset 0 0 18px #0008;transition:border-color .25s,box-shadow .25s}
+.pre-password-icon{font-size:18px;color:#b9a0dc;padding-left:8px}
+.pre-password-wrap input{flex:1;width:100%;min-width:0;padding:13px 0;border:0;outline:0;background:transparent;color:#f0e8fb;font:clamp(12px,2vw,16px) var(--mono);letter-spacing:.12em}
+.pre-password-state{flex-shrink:0;font:8px var(--mono);letter-spacing:.05em;color:#91d3d1;white-space:nowrap}
+.pre-unlock-button{position:relative;isolation:isolate;display:grid;place-items:center;flex:0 0 54px;width:54px;height:54px;margin:0;padding:0;overflow:hidden;border:1px solid #c7a8f0;border-radius:9px;background:linear-gradient(135deg,#60417d,#24595a,#60417d);background-size:200% 200%;color:#fff;font-size:24px;box-shadow:0 0 12px #c7a8f060,0 0 28px #a9d9d62a;animation:preButtonPulse 1.8s ease-in-out infinite;transition:transform .2s,filter .2s}
+.pre-unlock-button:hover{filter:brightness(1.3);transform:scale(1.06);box-shadow:0 0 20px #c7a8f0a0,0 0 38px #a9d9d65c}
+.pre-unlock-button>span{position:absolute;top:3px;right:5px;font-size:12px;color:#e8fffc;text-shadow:0 0 8px #d8fffb;animation:sparkTwinkle 1.2s ease-in-out infinite}
+.pre-unlock-button.unlocking{opacity:.75;animation:none}
+@keyframes preButtonPulse{0%,100%{box-shadow:0 0 8px #c7a8f04d,0 0 18px #a9d9d61c;border-color:#a792d9}50%{box-shadow:0 0 18px #c7a8f0b0,0 0 34px #a9d9d66b;border-color:#e2d2ff}}
+@keyframes sparkTwinkle{0%,100%{opacity:.4;transform:scale(.8) rotate(0)}50%{opacity:1;transform:scale(1.25) rotate(45deg)}}
+.pre-warning-ticker{margin-top:16px;overflow:hidden;border-top:1px solid #d39d5b40;border-bottom:1px solid #d39d5b40;background:linear-gradient(90deg,#2a171a,#171018,#2a171a);color:#e6b6a0;font:10px/1.8 var(--mono);letter-spacing:.04em;white-space:nowrap}
+.pre-warning-ticker span{display:inline-block;padding:9px 0 9px 100%;animation:preWarningScroll 19s linear infinite}
+@keyframes preWarningScroll{from{transform:translateX(0)}to{transform:translateX(-100%)}}
+@media(max-width:520px){.pre-password-wrap{gap:6px;padding:4px 7px}.pre-password-state{font-size:7px}.pre-unlock-button{flex-basis:46px;width:46px;height:46px;font-size:21px}}
 .pre-lock-foot{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:13px;border-top:1px solid #ffffff12;font:8px/1.6 var(--mono);letter-spacing:.04em;color:#7d738c}
 .pre-content-enter{animation:fadein .42s ease}
 .pre-definition{gap:14px;margin-top:0}
@@ -490,8 +497,9 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
               <span class="pre-password-icon" aria-hidden="true">⌑</span>
               <input id="prePassword" type="password" value="PRE-09-RE-EARTH" readonly aria-label="이미 입력된 인증 키">
               <span class="pre-password-state">KEY LOADED</span>
+              <button class="pre-unlock-button" onclick="unlockPRE()" aria-label="기밀 문서 열람">🔒<span class="unlock-spark" aria-hidden="true">✦</span></button>
             </div>
-            <button class="pre-unlock-button" onclick="unlockPRE()">인증 및 기밀 문서 열람 <span aria-hidden="true">↗</span></button>
+            <div class="pre-warning-ticker" aria-label="기밀 경고"><span>⚠️ 최고 기밀 문서 — 승인되지 않은 접근 및 정보 유출은 엄격히 금지됩니다. 열람 기록은 모두 저장·추적됩니다. ⚠️</span></div>
             <div class="pre-lock-foot"><span>ENCRYPTION LEVEL 09</span><span>UNAUTHORIZED ACCESS PROHIBITED</span></div>
           </div>
         </div>
