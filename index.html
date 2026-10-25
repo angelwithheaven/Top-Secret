@@ -787,7 +787,7 @@ const agentData={
   aex:{
     image:'https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/KakaoTalk_20261025_204805001_01.png',
     name:'AEX',korean:'아엑스',rank:'소위 · 우주작전사령부',
-    age:'21세 / 남성',height:'220 cm',
+    age:'21세 / 수컷',height:'220 cm',
     academy:'테르노사 통합군 사관학교 · 199기',
     location:'대한민국 서울 · 행복동',
     activity:'인간 대상 관측 및 지구 생활 양식 수집.',
@@ -822,10 +822,10 @@ const agentData={
   mern:{
     image:'https://raw.githubusercontent.com/angelwithheaven/Top-Secret/main/KakaoTalk_20261025_204805001.png',
     name:'Mern',korean:'메른',rank:'소령 · 특수작전사령부',
-    age:'27세 수컷',height:'230 cm',
+    age:'27세 / 수컷',height:'230 cm',
     academy:'테르노사 통합군 사관학교 · 192기',
     location:'대한민국 서울 · 행복동',
-    activity:'위장신분: 김메론 · 행복제과 신입사원',
+    activity:'김메론 · 행복제과 신입사원',
     form:'회색 생쥐 · 몸통 약 10 cm / 꼬리 약 10 cm / 60 g',
     symbol:'⟡',
     secretTitle:'Mern / 중대 행동 편차 보고서',
@@ -1022,7 +1022,7 @@ function openAgentModal(id){
       <div class="detail"><div class="label">신장</div><div class="value">${escapeHTML(d.height)}</div></div>
       <div class="detail full"><div class="label">사관학교 / 기수</div><div class="value">${escapeHTML(d.academy)}</div></div>
       <div class="detail full"><div class="label">지구 파견 지역</div><div class="value">${escapeHTML(d.location)}</div></div>
-      <div class="detail full"><div class="label">현재 활동</div><div class="value">${escapeHTML(d.activity)}</div></div>
+      <div class="detail full"><div class="label">현재 활동</div><div class="value">${d.name==='Mern'?'위장신분: ':''}${escapeHTML(d.activity)}</div></div>
       <div class="detail full"><div class="label">동물화 형태</div><div class="value">${escapeHTML(d.form)}</div></div>
     </div>
     <button class="secret-btn" onclick="revealSecret('${id}')">✦　극비 특이사항 열람 [ 기밀 파일 열기 ]</button>`;
@@ -1154,7 +1154,7 @@ function renderChat(){
   const container=document.getElementById('chatMessages');if(!container)return;
   const names={aex:'AEX',tezev:'TEZEV',mern:'Mern'};
   const messages=chatHistory[activeChannel]||[];
-  container.innerHTML=`<div class="chat-date">보안 세션 // ${names[activeChannel]} // 2030.04</div>`+
+  container.innerHTML=`<div class="chat-date">보안 세션 · ${names[activeChannel]} · ${activeChannel==='mern'?'2030.08':'2030.04'}</div>`+
     messages.map(m=>`
       <div class="message ${m.from==='hq'?'hq':'agent'}" ${m.from==='agent'?`data-agent="${names[activeChannel]}"`:''}>
         <div class="message-meta">${m.from==='hq'?'중앙 통제 본부':'현장 요원 '+names[activeChannel]} · ${escapeHTML(m.time||'현재')}</div>
