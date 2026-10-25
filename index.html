@@ -1,746 +1,1107 @@
-
 <!DOCTYPE html>
 <html lang="ko">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>TERNOSA // SECURE TERMINAL</title>
+<meta name="theme-color" content="#09070f">
+<title>TEVION UNIFIED MILITARY</title>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Noto+Sans+KR:wght@300;400;500;600;700&display=swap');
-
 :root{
-  --bg:#080c12;--panel:#0e151e;--panel2:#111c27;
-  --line:#263744;--line2:#3b5360;
-  --text:#c7d3d8;--muted:#647985;--faint:#344650;
-  --mint:#9bc9bd;--blue:#8faec8;--gold:#c9b98c;
-  --red:#c87878;--violet:#a99abf;
+  color-scheme:dark;
+  --bg:#08060d;--panel:#15111e;--panel2:#1d1729;--panel3:#282039;
+  --line:rgba(192,166,228,.23);--line2:rgba(192,166,228,.45);
+  --text:#eee8f5;--muted:#a49aae;--violet:#c7a8f0;
+  --cyan:#a9d9d6;--red:#ff8eaa;--green:#a6d8bd;
+  --mono:ui-monospace,SFMono-Regular,Consolas,"Liberation Mono",monospace;
+  --sans:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif
 }
 *{box-sizing:border-box}
-html{min-height:100%;background:var(--bg)}
-body{margin:0;background:var(--bg);color:var(--text);font:12px/1.8 'IBM Plex Mono','Noto Sans KR',monospace;min-height:100vh}
-button,input{font:inherit}
-button{color:inherit;cursor:pointer}
-button:focus-visible,input:focus-visible{outline:1px solid var(--mint);outline-offset:3px}
+html,body{margin:0;min-height:100%;background:var(--bg);color:var(--text);font-family:var(--sans)}
+body{min-height:100vh;overflow-x:hidden;background:radial-gradient(ellipse at 12% 10%,#57357835,transparent 35%),radial-gradient(ellipse at 90% 85%,#36316d25,transparent 35%),linear-gradient(135deg,#08060d,#100b19 55%,#09070f)}
+button,input,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--cyan);outline-offset:3px}
 button:disabled{opacity:.35;cursor:not-allowed}
-::selection{background:var(--mint);color:#07100f}
-.hidden{display:none!important}
-.mono{font-family:'IBM Plex Mono',monospace}
-.muted{color:var(--muted)}
-.mint{color:var(--mint)}
-.gold{color:var(--gold)}
-.red{color:var(--red)}
-.blue{color:var(--blue)}
-.violet{color:var(--violet)}
-.small{font-size:10px}
-.tiny{font-size:9px}
-.upper{letter-spacing:1.8px;text-transform:uppercase}
-.rule{height:1px;background:var(--line);margin:16px 0}
-button:active{transform:translateY(1px)}
-button:hover{border-color:var(--mint)!important;color:var(--mint)}
-#app{max-width:1440px;margin:auto;min-height:100vh;border-left:1px solid #182630;border-right:1px solid #182630}
-.topline{height:3px;background:linear-gradient(90deg,#526c76 0 24%,#182b37 24% 73%,#786a53 73% 86%,#182b37 86%)}
-header{display:flex;justify-content:space-between;align-items:center;gap:16px;padding:14px 24px;border-bottom:1px solid var(--line);background:#0a1017}
-.brand{display:flex;align-items:center;gap:13px;min-width:0}
-.emblem{width:34px;height:34px;border:1px solid var(--gold);display:grid;place-items:center;color:var(--gold);font-size:17px;transform:rotate(45deg);flex-shrink:0}
-.emblem span{transform:rotate(-45deg)}
-.brandname{font-size:12px;letter-spacing:2px;color:#d4dfe2}
-.brandsub{font-size:9px;color:var(--muted);letter-spacing:1px}
-.headright{text-align:right;font-size:9px;color:var(--muted);line-height:1.7}
-.led{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--mint);box-shadow:0 0 7px #719f92;margin-right:6px}
-#gate{min-height:calc(100vh - 62px);display:grid;place-items:center;padding:35px 20px;position:relative;overflow:hidden}
-#gate:before,#gate:after{content:"";position:absolute;pointer-events:none}
-#gate:before{inset:0;background:repeating-linear-gradient(0deg,transparent 0 47px,rgba(118,151,169,.045) 48px),repeating-linear-gradient(90deg,transparent 0 47px,rgba(118,151,169,.035) 48px)}
-#gate:after{width:480px;height:480px;border:1px solid rgba(143,174,200,.08);border-radius:50%;box-shadow:0 0 0 55px rgba(143,174,200,.018),0 0 0 110px rgba(143,174,200,.012)}
-.gatebox{position:relative;z-index:1;width:min(100%,460px);border:1px solid var(--line2);background:rgba(10,16,23,.96);padding:30px}
-.gatebox:before{content:"";position:absolute;left:-1px;top:-1px;width:45px;height:3px;background:var(--gold)}
-.gatecode{display:flex;justify-content:space-between;gap:10px;font-size:9px;color:var(--muted);letter-spacing:1px}
-.glyph{font-size:25px;color:var(--gold);margin:25px 0 4px;letter-spacing:8px}
-.gatetitle{font-family:'Noto Sans KR',sans-serif;font-size:21px;font-weight:500;letter-spacing:1px;color:#e1e8e9;line-height:1.7}
-.gateeng{font-size:10px;color:var(--blue);letter-spacing:2px}
-.gatedesc{margin:22px 0;color:#8496a0;font-size:11px;line-height:2}
-.gatefield{display:flex;gap:8px;margin-top:20px}
-.gatefield input{width:100%;min-width:0;background:#080d13;border:1px solid var(--line2);padding:12px;color:var(--mint);letter-spacing:2px}
-.gatefield input::placeholder{color:#45545c}
-.btn{background:#15232d;border:1px solid var(--line2);padding:10px 14px;transition:.2s}
-.btn.primary{background:#b8c9bf;color:#101917;border-color:#b8c9bf;font-weight:600}
-.btn.primary:hover{background:#d6e4dc;color:#101917}
-.gatefoot{display:flex;justify-content:space-between;gap:12px;margin-top:20px;padding-top:12px;border-top:1px solid var(--line);font-size:9px;color:var(--muted)}
-#gateMsg{min-height:24px;margin-top:12px;color:var(--red);font-size:10px}
-#terminal{min-height:calc(100vh - 62px)}
-.noticebar{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;padding:7px 24px;background:#101820;border-bottom:1px solid var(--line);font-size:9px;color:var(--muted)}
-.noticebar .alert{color:var(--gold)}
-.layout{display:grid;grid-template-columns:218px minmax(0,1fr);min-height:calc(100vh - 110px)}
-aside{border-right:1px solid var(--line);padding:18px 12px;background:#0a1016}
-.sidehead{padding:0 10px 13px;color:var(--muted);font-size:9px;letter-spacing:2px}
-.navbtn{display:flex;align-items:center;gap:11px;width:100%;text-align:left;padding:11px 10px;margin:2px 0;background:transparent;border:1px solid transparent;color:#8799a3;font-size:11px}
-.navbtn .num{font-size:9px;color:#526672;width:20px}
-.navbtn.active{background:#13212a;border-color:#293d49;color:var(--mint)}
-.navbtn.active .num{color:var(--mint)}
-.sidefoot{margin:30px 9px 0;padding-top:14px;border-top:1px solid var(--line);font-size:9px;color:var(--muted);line-height:2}
-.main{padding:25px clamp(15px,3vw,38px) 45px;min-width:0}
-.breadcrumb{font-size:9px;color:var(--muted);letter-spacing:1px;margin-bottom:16px}
-.breadcrumb span{color:var(--mint)}
-.pagehead{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;margin-bottom:22px}
-.pagehead h1{font-family:'Noto Sans KR',sans-serif;font-weight:400;font-size:22px;letter-spacing:1px;margin:0;color:#e0e8e9}
-.pagehead p{margin:5px 0 0;color:var(--muted);font-size:10px}
-.stamp{border:1px solid #655d49;color:var(--gold);padding:5px 9px;font-size:9px;letter-spacing:1px;white-space:nowrap}
-.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
-.panel{border:1px solid var(--line);background:var(--panel);min-width:0}
-.panelhead{padding:10px 13px;border-bottom:1px solid var(--line);display:flex;justify-content:space-between;gap:10px;align-items:center;color:#9aadb6;font-size:10px;letter-spacing:1px}
-.panelbody{padding:15px}
-.hero{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(190px,.8fr);gap:12px;margin-bottom:12px}
-.worldpanel{position:relative;min-height:245px;overflow:hidden;background:radial-gradient(ellipse at 78% 40%,rgba(103,91,139,.16),transparent 40%),linear-gradient(135deg,#101a25,#0b121a)}
-.worldpanel:after{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(0deg,transparent 0 26px,rgba(137,165,182,.035) 27px)}
-.worldcontent{position:relative;z-index:1;padding:20px}
-.worldname{font-size:10px;color:var(--blue);letter-spacing:3px}
-.worldtitle{font-family:'Noto Sans KR',sans-serif;font-size:27px;letter-spacing:4px;margin:15px 0 4px;color:#d4dbe1}
-.worlddesc{font-size:10px;color:#718792;max-width:390px;line-height:2}
-.orbit{position:absolute;width:190px;height:190px;border:1px solid rgba(169,154,191,.18);border-radius:50%;right:5%;top:15%;transform:rotate(-22deg)}
-.orbit:before{content:"";position:absolute;inset:23px;border:1px dashed rgba(143,174,200,.23);border-radius:50%}
-.orbit:after{content:"";position:absolute;width:6px;height:6px;border-radius:50%;background:var(--violet);left:24px;top:32px;box-shadow:0 0 14px var(--violet)}
-.worldstats{display:flex;gap:20px;flex-wrap:wrap;margin-top:22px}
-.statlabel{font-size:9px;color:var(--muted)}
-.statvalue{font-size:15px;color:var(--mint)}
-.quote{font-family:'Noto Sans KR',sans-serif;font-size:14px;line-height:2;color:#c9d4d7;margin:12px 0}
-.quoteattr{font-size:9px;color:var(--gold)}
-.minirows{display:grid;gap:0}
-.minirow{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #1e2b35;font-size:10px}
-.minirow:last-child{border:0}
-.minirow span:first-child{color:var(--muted)}
-.bar{height:3px;background:#202d37;margin-top:8px}
-.bar i{display:block;height:100%;background:var(--mint)}
-.loglist{display:grid}
-.logrow{display:grid;grid-template-columns:68px minmax(0,1fr) auto;gap:10px;align-items:start;padding:11px 0;border-bottom:1px solid #1e2b35;font-size:10px}
-.logrow:last-child{border:0}
-.logtime{color:var(--muted)}
-.logtitle{color:#bfcdd1}
-.logdesc{font-size:9px;color:var(--muted);margin-top:3px;line-height:1.8}
-.tag{font-size:8px;padding:2px 5px;border:1px solid #3c4c54;color:#8da0a9;white-space:nowrap}
-.tag.warn{border-color:#62583f;color:var(--gold)}
-.tag.danger{border-color:#674344;color:var(--red)}
-.tag.ok{border-color:#38564e;color:var(--mint)}
-/* 내부 페이지 */
-.view{display:none}
-.view.active{display:block;animation:appear .25s ease}
-@keyframes appear{from{opacity:.3;transform:translateY(4px)}to{opacity:1;transform:none}}
-.querybox{display:flex;gap:8px;margin-bottom:14px}
-.querybox input{flex:1;min-width:0;background:#090f15;border:1px solid var(--line2);padding:10px;color:var(--text)}
-.assetlist{display:grid;gap:8px}
-.asset{display:grid;grid-template-columns:58px minmax(0,1fr) auto;align-items:center;gap:13px;padding:14px;background:#0c141c;border:1px solid var(--line);text-align:left;width:100%;min-width:0}
-.asset:hover{background:#13212a}
-.assetmark{height:45px;display:grid;place-items:center;border:1px solid var(--line2);color:var(--gold);font-size:11px}
-.assetname{font-size:11px;color:#cdd9dc;letter-spacing:1px}
-.assetmeta{font-size:9px;color:var(--muted);margin-top:4px}
-.assetstatus{font-size:9px;color:var(--mint);text-align:right}
-.profiletop{display:grid;grid-template-columns:minmax(180px,240px) minmax(0,1fr);gap:22px;align-items:start}
-.photo{width:100%;aspect-ratio:3/4;background:#101923;border:1px solid var(--line2);padding:5px;position:relative;overflow:hidden}
-.photo:before{content:"";position:absolute;inset:9px;border:1px solid rgba(143,174,200,.15);pointer-events:none;z-index:1}
-.photo img{display:block;width:100%;height:100%;object-fit:cover;background:#111a24}
-.photo .photofallback{position:absolute;inset:0;display:grid;place-items:center;color:var(--muted);font-size:9px;text-align:center;padding:20px}
-.profileid{font-size:9px;color:var(--gold);letter-spacing:2px}
-.profilename{font-family:'Noto Sans KR',sans-serif;font-size:30px;font-weight:400;letter-spacing:3px;margin:7px 0 2px;color:#e0e8e9;overflow-wrap:anywhere}
-.profilelatin{font-size:11px;color:var(--blue)}
-.profiledesc{font-family:'Noto Sans KR',sans-serif;font-size:12px;line-height:2;color:#9caeb5;margin:17px 0}
-.facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1px;background:var(--line);border:1px solid var(--line);margin-top:15px}
-.fact{background:#0d151d;padding:10px}
-.factlabel{font-size:9px;color:var(--muted)}
-.factvalue{font-family:'Noto Sans KR',sans-serif;font-size:11px;color:#d0dadd;margin-top:4px;overflow-wrap:anywhere}
-.recordblock{margin-top:18px}
-.blocktitle{display:flex;justify-content:space-between;gap:10px;padding-bottom:9px;border-bottom:1px solid var(--line);font-size:10px;color:var(--blue);letter-spacing:1px}
-.recordtext{font-family:'Noto Sans KR',sans-serif;font-size:11px;line-height:2.1;color:#9aadb5;padding:12px 0}
-.redaction{background:repeating-linear-gradient(135deg,#090d12 0 5px,#1a252e 5px 10px);color:transparent;user-select:none}
-.profileactions{display:flex;gap:8px;flex-wrap:wrap;margin-top:22px}
-.backbtn{background:transparent;border:1px solid var(--line2);padding:9px 12px;font-size:10px}
-.lockeddoc{border:1px solid #514a3d;background:#141611;padding:18px;margin-top:14px}
-.lockedtitle{font-size:11px;color:var(--gold);letter-spacing:2px}
-.lockedbody{font-family:'Noto Sans KR',sans-serif;color:#8f9a94;font-size:11px;line-height:2;margin:10px 0}
-#secretReveal{border:1px solid #5b5140;background:#1c1b16;color:var(--gold);padding:8px 11px;font-size:10px}
-#secretReveal:hover{background:#2a271c}
-.secrettext{border-left:2px solid var(--red);padding:12px 15px;margin-top:14px;background:#171416;font-family:'Noto Sans KR',sans-serif;line-height:2;color:#c3b8b6}
-.secrettext h3{font-size:12px;color:var(--red);font-weight:500;margin:0 0 7px}
-.secrettext p{margin:6px 0}
-footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:9px;color:#526672;background:#090e14}
-.toast{position:fixed;right:18px;bottom:18px;z-index:10;max-width:min(360px,calc(100vw - 36px));padding:12px 15px;background:#131e27;border:1px solid var(--line2);color:var(--mint);font-size:10px;box-shadow:0 8px 35px #0008;animation:appear .2s ease}
-#statusline{color:var(--mint)}
-
-/* P.R.E. terminal refinement: use the available viewport instead of leaving the main panel sparse */
-.layout{min-height:calc(100vh - 110px);align-items:stretch}
-.main{display:flex;flex-direction:column;padding-bottom:24px}
-.view.active{flex:1;min-width:0}
-#view-observatory .grid2,#view-overview .grid2{align-items:stretch}
-#view-observatory .panel,#view-overview .panel{height:100%}
-.loglist{gap:0}
-.logrow{grid-template-columns:78px minmax(0,1fr) auto;padding:15px 0;min-height:78px}
-.logtitle{font-size:11px;letter-spacing:.15px}
-.logdesc{font-size:10px;line-height:1.9}
-.recordtext{line-height:2}
-.profiletop{align-items:stretch}
-.profileinfo{display:flex;flex-direction:column;justify-content:center}
-@media(min-width:761px){
-  .layout{min-height:calc(100vh - 110px)}
-  .main{min-height:calc(100vh - 110px)}
-  #view-comms .panel{min-height:460px}
-  #view-comms .loglist{min-height:360px;justify-content:space-around}
+#bgCanvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0}
+.shell{position:relative;z-index:1;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:clamp(8px,2vw,25px)}
+.window{width:min(1240px,100%);height:min(900px,calc(100dvh - 32px));min-height:590px;display:flex;flex-direction:column;overflow:hidden;border:1px solid var(--line2);border-radius:16px;background:linear-gradient(145deg,#20182df5,#100d18fa 60%,#191324f5);box-shadow:0 28px 100px #000b,0 0 55px #9c78c51a,inset 0 1px #ffffff0b;backdrop-filter:blur(18px)}
+.hidden{display:none!important}.mono{font-family:var(--mono)}.scanlines{position:relative}
+.scanlines:after{content:"";position:absolute;inset:0;pointer-events:none;border-radius:inherit;background:repeating-linear-gradient(to bottom,transparent 0 4px,#00000008 5px);opacity:.45}
+h1,h2,h3,p{margin:0}button{border:0}
+.eyebrow,.kicker,.smallnote,.tag,.brand-title,.brand-sub,.counter,.tab,.section-index,.label,.card-foot,.log-meta,.system-text{font-family:var(--mono)}
+.landing{width:min(580px,100%);height:auto;min-height:500px;padding:clamp(25px,5vw,48px);align-items:center;justify-content:center;text-align:center;gap:25px}
+.star-mark{width:78px;height:78px;border:1px solid #a68ac66e;border-radius:24px;display:grid;place-items:center;background:linear-gradient(145deg,#322344,#151722);box-shadow:0 0 35px #8d68b51c;color:var(--violet);font-size:35px;text-shadow:0 0 20px #c7a8f088}
+.eyebrow{font-size:10px;color:var(--red);border:1px solid #a3445b66;background:#37131f99;border-radius:999px;padding:7px 12px;display:inline-flex;gap:8px;align-items:center}
+.dot{width:6px;height:6px;background:var(--red);border-radius:50%;box-shadow:0 0 12px var(--red);display:inline-block}
+.landing h1{font-size:clamp(23px,4vw,34px);letter-spacing:-.045em;line-height:1.35;margin:16px 0 12px}
+.landing h1 span{color:var(--violet);font-family:var(--mono);font-size:.68em;letter-spacing:.035em}
+.sub{font-size:12px;line-height:1.95;color:var(--muted)}
+.primary,.action-btn,.tab,.quiet,.secret-btn,.filter-btn,.send-btn{border:1px solid var(--line2);background:linear-gradient(135deg,#3b2b50d9,#1a2630e8);transition:background .2s,border-color .2s,transform .2s,box-shadow .2s}
+.primary:hover,.action-btn:hover,.tab:hover,.quiet:hover,.secret-btn:hover,.filter-btn:hover,.send-btn:hover{border-color:#a9d9d6a8;background:linear-gradient(135deg,#4b365f,#243940)}
+.primary{width:100%;padding:15px 18px;border-radius:11px;font:11px var(--mono);color:var(--cyan);letter-spacing:.035em}
+.smallnote{font-size:9px;color:#827a91;line-height:1.8}
+header.topbar{min-height:60px;padding:12px 18px;display:flex;align-items:center;justify-content:space-between;gap:12px;background:#171321e8;border-bottom:1px solid var(--line);flex-shrink:0}
+.brand{display:flex;align-items:center;gap:11px;min-width:0}
+.brand-icon{width:32px;height:32px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:10px;color:var(--violet);font-size:19px;text-shadow:0 0 15px #c7a8f088}
+.brand-title{font-size:11px;color:#e7def2;white-space:nowrap}.brand-sub{font-size:9px;color:var(--muted);margin-top:4px}
+.top-actions{display:flex;align-items:center;gap:9px}
+.counter{font-size:9px;color:var(--violet);border:1px solid #715c8c6b;background:#271c38;padding:7px 9px;border-radius:7px;white-space:nowrap}
+.quiet{padding:8px 10px;border-radius:7px;font:9px var(--mono);color:var(--muted);background:#ffffff04;border-color:transparent}
+.nav{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;padding:10px 13px;background:#100d18e8;border-bottom:1px solid var(--line);flex-shrink:0}
+.tab{min-width:0;padding:11px 8px;border-radius:8px;color:var(--muted);border-color:transparent;background:#ffffff04;font-size:10px;line-height:1.6;text-align:center}
+.tab .num{color:var(--violet);margin-right:5px}
+.tab.active{color:var(--cyan);background:#332441b8;border-color:#9e7bc85e;box-shadow:inset 0 1px #ffffff0a}
+.content{flex:1;overflow:auto;min-height:0;padding:clamp(12px,2vw,23px);scrollbar-width:thin;scrollbar-color:#65517e #100d18}
+.tab-content{animation:fadein .25s ease}
+@keyframes fadein{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:translateY(0)}}
+.panel{border:1px solid var(--line);background:#171321d9;border-radius:12px;padding:clamp(13px,1.8vw,19px);min-width:0}
+.panel-head,.section-top{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;margin-bottom:14px}
+.kicker{font-size:9px;color:var(--violet);letter-spacing:.13em}
+.heading{font-size:clamp(16px,2vw,20px);letter-spacing:-.035em;margin-top:6px}
+.tag{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:5px;padding:5px 7px;color:var(--muted);font-size:9px;white-space:nowrap}
+.tag.red{color:var(--red);border-color:#a3445b6b;background:#3b1724a8}
+.tag.cyan{color:var(--cyan);border-color:#507c7966;background:#142d30a8}
+.tag.violet{color:var(--violet);background:#291d39;border-color:#715c8c70}
+.section-top p{font:10px/1.8 var(--mono);color:var(--muted)}
+.data-row{display:grid;grid-template-columns:135px minmax(0,1fr);gap:12px;padding:12px 0;border-bottom:1px solid #ffffff0c;font-size:11px;line-height:1.8}
+.data-row:last-child{border-bottom:0}
+.label{font-size:9px;color:var(--muted)}.value{color:#e6deef;line-height:1.8;overflow-wrap:anywhere}
+footer{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 16px;background:#130f1ce8;border-top:1px solid var(--line);font:9px var(--mono);color:var(--muted);flex-shrink:0}
+.online{color:var(--green)}
+/* 01 / 지구 조사 */
+.research-subnav{display:flex;gap:8px;margin-bottom:14px}
+.research-subtab{flex:1;min-width:0;padding:12px;border:1px solid var(--line);border-radius:9px;background:#100d18;color:var(--muted);text-align:left;transition:.25s}
+.research-subtab .subtab-code{display:block;font:10px var(--mono);color:var(--violet);margin-bottom:5px}
+.research-subtab .subtab-title{font-size:12px}
+.research-subtab.active{background:linear-gradient(120deg,#30213f,#182b30);border-color:#a9d9d68a;box-shadow:0 0 20px #a9d9d610;color:var(--cyan)}
+.research-subpage{animation:fadein .25s ease}
+.earth-grid{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(270px,.95fr);gap:14px}
+.earth-visual{position:relative;aspect-ratio:1/1;width:100%;overflow:hidden;border:1px solid var(--line2);border-radius:10px;background:radial-gradient(circle at 52% 44%,#345a6e55,transparent 32%),radial-gradient(circle at 50% 50%,#241c34,#0b0911 72%)}
+.earth-visual img{width:100%;height:100%;object-fit:cover;display:block}
+.earth-placeholder{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;padding:20px;color:var(--muted);font-family:var(--mono)}
+.planet-symbol{width:43%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle at 35% 30%,#a7d7dd 0 3%,transparent 4%),radial-gradient(ellipse at 35% 40%,#477d91 0 13%,transparent 14%),radial-gradient(ellipse at 70% 60%,#587b69 0 12%,transparent 13%),radial-gradient(circle at 38% 30%,#a7cbd8,#31536f 48%,#0c1527 74%);box-shadow:inset -15px -10px 22px #05040bcc,0 0 40px #6ba7ce28;position:relative}
+.planet-symbol:after{content:"";position:absolute;inset:-10%;border:1px solid #c7a8f044;border-radius:50%;transform:rotate(-25deg) scaleY(.32)}
+.earth-placeholder .hint{font-size:9px;line-height:1.8}
+.earth-photo-label{position:absolute;bottom:10px;left:10px;right:10px;display:flex;justify-content:space-between;gap:8px;font:8px var(--mono);color:#e4d7f0;text-shadow:0 1px 5px #000}
+.earth-facts{display:grid;gap:10px;align-content:start}
+.fact{border:1px solid var(--line);border-radius:9px;padding:13px;background:#100d18a8;min-width:0}
+.fact .label{margin-bottom:7px}.fact .value{font-size:11px}
+.earth-description{font-size:12px;line-height:1.9;color:#c8bed4}
+.earth-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:9px;margin-top:14px}
+.stat{border:1px solid var(--line);border-radius:9px;background:#100d18a8;padding:12px;min-width:0}
+.stat .number{font:16px var(--mono);color:var(--cyan);margin-bottom:7px}
+.stat .caption{font-size:10px;line-height:1.7;color:var(--muted)}
+.data-menu{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:13px}
+.filter-btn{padding:10px 12px;border-radius:8px;background:#100d18a8;border-color:transparent;font:9px var(--mono);color:var(--muted)}
+.filter-btn.active{color:var(--cyan);border-color:#7aa9a76b;background:#1b3033}
+.data-view{min-height:230px}
+.data-warning{border:1px solid #8f3d566e;background:#30131f80;color:#e9a4b5;border-radius:8px;padding:11px;font:10px/1.8 var(--mono);margin-top:12px}
+/* 02 / P.R.E. */
+.pre-hero{position:relative;overflow:hidden;border:1px solid #a3445b66;border-radius:13px;padding:clamp(19px,3vw,31px);background:linear-gradient(130deg,#281520e8,#17121e 60%,#1c1730)}
+.pre-hero:after{content:"P.R.E.";position:absolute;right:-10px;bottom:-37px;font:900 clamp(75px,13vw,145px) var(--mono);color:#ffffff05;pointer-events:none}
+.pre-hero h2{font-size:clamp(23px,4vw,34px);margin:12px 0;letter-spacing:-.04em}
+.pre-hero p{font-size:12px;line-height:2;color:#c8bed4;max-width:760px}
+.pre-hero .tag{margin-top:17px}
+.pre-definition{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:13px;margin-top:13px}
+.pre-card{border:1px solid var(--line);border-radius:12px;background:#171321d9;padding:18px;min-width:0;overflow:hidden}
+.pre-card h3{font-size:13px;line-height:1.7;margin:10px 0;overflow-wrap:anywhere;word-break:break-word}
+.pre-card p{font-size:11px;line-height:1.9;color:var(--muted)}
+.pre-stamp{width:35px;height:35px;border:1px solid var(--line2);border-radius:9px;display:grid;place-items:center;color:var(--violet);font:14px var(--mono)}
+.objectives{display:grid;gap:10px;margin-top:13px}
+.objective{display:grid;grid-template-columns:70px minmax(0,1fr);gap:13px;align-items:start;padding:16px;border:1px solid var(--line);border-radius:10px;background:#100d18bd}
+.objective-number{font:11px var(--mono);color:var(--violet);padding-top:2px}
+.objective h3{font-size:12px;margin-bottom:6px}.objective p{font-size:11px;line-height:1.8;color:var(--muted)}
+.pre-access{width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:14px;padding:16px;border:1px solid #9b4d636b;border-radius:10px;background:linear-gradient(110deg,#32152299,#171321);text-align:left}
+.access-title{font:11px var(--mono);color:var(--red)}.access-sub{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.7}
+.access-icon{font-size:24px;color:var(--red)}
+/* 03 / 현장 요원 */
+.agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}
+.agent-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;padding:13px;background:linear-gradient(155deg,#1c1728e8,#100d17f5);cursor:pointer;transition:.22s;min-width:0}
+.agent-card:hover{border-color:#a9d9d68c;transform:translateY(-3px);box-shadow:0 12px 28px #0003}
+.agent-card.viewed{border-color:#7cae9b8a}
+.rank-badge{position:absolute;z-index:2;top:20px;right:19px}
+.avatar{aspect-ratio:3/4;width:100%;border-radius:9px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:13px;border:1px solid #ffffff0d;background:radial-gradient(ellipse at 50% 34%,#59436f 0,#292139 34%,#17131f 72%)}
+.avatar:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#ffffff08,transparent 45%,#a9d9d606)}
+.avatar-symbol{font-size:clamp(38px,6vw,65px);color:#d3bce9;text-shadow:0 0 28px #c7a8f044;z-index:1}
+.avatar-code{position:absolute;bottom:10px;left:10px;font:8px var(--mono);color:#b0a4bf;letter-spacing:.1em}
+.avatar-ring{position:absolute;width:60%;aspect-ratio:1;border:1px solid #bda3df26;border-radius:50%;box-shadow:0 0 0 12px #bda3df06,0 0 0 25px #bda3df04}
+.agent-name{font:600 18px var(--mono);letter-spacing:.02em}
+.agent-sub{font-size:10px;color:var(--muted);margin-top:6px;line-height:1.7}
+.card-foot{display:flex;justify-content:space-between;align-items:center;gap:6px;margin-top:13px;padding-top:10px;border-top:1px solid #ffffff0c;font-size:8px;color:var(--muted)}
+.status{color:var(--muted)}.status.done{color:var(--green)}
+/* 04 / 통신 */
+.chat-layout{display:grid;grid-template-columns:minmax(0,1fr) 250px;gap:13px;min-height:0}
+.chat-main{border:1px solid var(--line);border-radius:12px;background:#100d18c9;overflow:hidden;display:flex;flex-direction:column;min-width:0;min-height:420px}
+.chat-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:13px 15px;background:#1b1527;border-bottom:1px solid var(--line)}
+.chat-head h2{font:12px var(--mono)}.chat-head p{font-size:9px;color:var(--muted);margin-top:5px}
+.chat-online{font:9px var(--mono);color:var(--green);white-space:nowrap}
+.channel-row{display:flex;gap:6px;padding:9px 12px;border-bottom:1px solid var(--line);overflow-x:auto;background:#15111e}
+.channel{flex-shrink:0;padding:8px 10px;border:1px solid transparent;border-radius:7px;background:#ffffff04;color:var(--muted);font:9px var(--mono)}
+.channel.active{color:var(--cyan);background:#1b3033;border-color:#507c7966}
+.chat-messages{flex:1;min-height:200px;overflow:auto;padding:15px;display:flex;flex-direction:column;gap:12px;scrollbar-width:thin}
+.chat-date{align-self:center;border:1px solid var(--line);border-radius:999px;padding:5px 10px;color:#827a91;font:8px var(--mono);margin-bottom:4px}
+.message{display:flex;flex-direction:column;gap:5px;max-width:86%;animation:fadein .2s}
+.message.hq{align-self:flex-end;align-items:flex-end}.message.agent{align-self:flex-start;align-items:flex-start}
+.message-meta{font:8px var(--mono);color:var(--muted)}
+.bubble{padding:11px 13px;border:1px solid var(--line);border-radius:10px;font-size:11px;line-height:1.8;background:#21192e;color:#e5dbea;overflow-wrap:anywhere}
+.message.hq .bubble{background:linear-gradient(135deg,#2a2038,#1b2630);border-color:#6b5887a1;border-top-right-radius:3px}
+.message.agent .bubble{border-top-left-radius:3px}
+.message.agent[data-agent="AEX"] .bubble{border-left:2px solid #a9d9d6}
+.message.agent[data-agent="TEZEV"] .bubble{border-left:2px solid #c7a8f0}
+.message.agent[data-agent="Mern"] .bubble{border-left:2px solid #ff8eaa}
+.chat-compose{padding:12px;border-top:1px solid var(--line);background:#171321;display:flex;gap:8px;align-items:flex-end}
+.chat-compose textarea{resize:vertical;min-height:42px;max-height:110px;flex:1;min-width:0;border:1px solid var(--line);border-radius:8px;background:#0c0a12;padding:11px;font-size:11px;line-height:1.6}
+.send-btn{align-self:stretch;min-width:78px;border-radius:8px;color:var(--cyan);font:10px var(--mono)}
+.chat-side{display:flex;flex-direction:column;gap:11px;min-width:0}
+.side-card{border:1px solid var(--line);border-radius:11px;background:#171321d9;padding:14px}
+.side-card h3{font-size:11px;margin-bottom:10px}.side-card p{font-size:10px;line-height:1.8;color:var(--muted)}
+.presence-list{display:grid;gap:10px}
+.presence{display:flex;align-items:center;justify-content:space-between;gap:8px;font:9px var(--mono)}
+.presence span:last-child{color:var(--green)}
+.summary-btn{width:100%;padding:12px;border-radius:8px;border:1px solid #8f3d566e;background:#30131f80;color:var(--red);font:9px var(--mono);line-height:1.7}
+.quick-actions{display:grid;gap:7px;margin-top:12px}
+.quick-btn{position:relative;overflow:hidden;padding:11px;text-align:left;border:1px solid #8b6aa96b;border-radius:8px;background:linear-gradient(115deg,#251a35,#171321);color:#d5c5e7;font-size:10px;line-height:1.6;animation:quickGlow 2.4s ease-in-out infinite}
+.quick-btn:nth-child(2){animation-delay:.45s}.quick-btn:nth-child(3){animation-delay:.9s}
+.quick-btn:before{content:"";position:absolute;top:-60%;left:-60%;width:35%;height:220%;transform:rotate(25deg);background:linear-gradient(90deg,transparent,#ffffff19,transparent);animation:quickShine 3.8s ease-in-out infinite}
+.quick-btn:hover{border-color:var(--cyan);color:var(--cyan);transform:translateX(2px)}
+@keyframes quickGlow{0%,100%{box-shadow:0 0 0 #c7a8f000;border-color:#8b6aa95b}50%{box-shadow:0 0 15px #c7a8f01b;border-color:#c7a8f0a3}}
+@keyframes quickShine{0%,65%{left:-60%}100%{left:150%}}
+/* 모달 */
+.modal-backdrop{position:fixed;inset:0;z-index:30;background:#05030bd9;backdrop-filter:blur(11px);display:flex;align-items:center;justify-content:center;padding:18px;opacity:0;transition:opacity .2s}
+.modal-backdrop.show{opacity:1}
+.modal{position:relative;width:min(660px,100%);max-height:min(90dvh,850px);overflow:auto;border:1px solid var(--line2);border-radius:14px;background:linear-gradient(145deg,#21192e,#100d17 75%);box-shadow:0 30px 100px #000b;padding:clamp(15px,3vw,23px);scrollbar-width:thin;scrollbar-color:#65517e #100d18}
+.modal-top{display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--line);padding-bottom:13px;margin-bottom:15px;gap:12px}
+.modal-title{font:600 16px var(--mono)}
+.close{font-size:24px;line-height:1;background:none;color:var(--muted);padding:2px 7px}.close:hover{color:white}
+.modal-person{display:grid;grid-template-columns:95px minmax(0,1fr);gap:15px;align-items:center;margin-bottom:15px}
+.modal-avatar{aspect-ratio:3/4;border:1px solid var(--line);border-radius:8px;background:radial-gradient(ellipse at 50% 35%,#59436f,#17131f 75%);display:grid;place-items:center;font-size:32px;color:var(--violet)}
+.modal-person h2{font:600 20px var(--mono);margin-bottom:7px}.modal-person p{font-size:10px;color:var(--muted);line-height:1.8}
+.detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.detail{padding:11px;border:1px solid var(--line);border-radius:8px;background:#0d0b14a8;min-width:0}
+.detail.full{grid-column:1/-1}
+.detail .label{font-size:9px;color:var(--muted);margin-bottom:6px}.detail .value{font-size:11px;line-height:1.7;color:#e6deef;overflow-wrap:anywhere}
+.secret-btn{width:100%;margin-top:14px;padding:14px;border-radius:9px;color:var(--red);font:10px var(--mono);background:#3215227a;border-color:#9b4d636b}
+.secret-backdrop{z-index:45;background:#030208ed}
+.secret-modal{position:relative;width:min(780px,100%);max-height:92dvh;overflow:auto;padding:clamp(20px,4vw,34px);border:1px solid #a3445b;background:radial-gradient(ellipse at 50% 0,#38182b,#120b17 60%,#08060d);box-shadow:0 0 100px #ff416a18,0 30px 100px #000d;animation:secretAppear .35s cubic-bezier(.15,.8,.2,1);scrollbar-width:thin}
+@keyframes secretAppear{0%{opacity:0;transform:scale(.88);filter:blur(12px)}65%{opacity:1;transform:scale(1.015);filter:blur(0)}100%{transform:scale(1)}}
+.secret-modal:before{content:"";position:absolute;inset:0;pointer-events:none;background:repeating-linear-gradient(to bottom,transparent 0 3px,#ff8eaa08 4px)}
+.secret-stamp{display:inline-block;padding:7px 10px;border:1px solid #ff8eaa8a;color:var(--red);font:10px var(--mono);letter-spacing:.12em;transform:rotate(-2deg);margin-bottom:19px}
+.secret-modal h2{font:600 clamp(20px,4vw,28px) var(--mono);color:#ffb1c2;line-height:1.4}
+.secret-sub{font:9px/1.8 var(--mono);color:#a77a8c;margin-top:8px}
+.secret-divider{height:1px;background:#a3445b65;margin:20px 0}
+.secret-body{display:grid;gap:12px}
+.secret-section{position:relative;display:grid;grid-template-columns:58px minmax(0,1fr);gap:14px;padding:17px 16px;border:1px solid #a3445b50;border-radius:10px;background:linear-gradient(115deg,#291320d9,#100b15);overflow:hidden;animation:secretRowIn .35s both}
+.secret-section:nth-child(2){animation-delay:.07s}.secret-section:nth-child(3){animation-delay:.14s}.secret-section:nth-child(4){animation-delay:.21s}.secret-section:nth-child(5){animation-delay:.28s}
+@keyframes secretRowIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
+.secret-index{font:700 23px var(--mono);color:#ff8eaa;text-shadow:0 0 20px #ff416a55;align-self:start}
+.secret-section h3{font-size:12px;letter-spacing:.04em;color:#ffced8;margin-bottom:8px}
+.secret-section p{font-size:11px;line-height:1.95;color:#e7cdd7;white-space:pre-line}
+.secret-footer{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:22px}
+.secret-close{padding:11px 15px;border:1px solid #a3445b;border-radius:7px;background:#391423;color:#ffb1c2;font:10px var(--mono)}
+.pre-modal{width:min(700px,100%)}
+.pre-lock{border:1px solid #a3445b88;background:#310f1c;padding:11px;border-radius:7px;color:var(--red);font:10px/1.8 var(--mono);margin-bottom:17px}
+.pre-modal h2{font-size:22px;margin-bottom:13px}.pre-modal p{font-size:12px;line-height:2;color:#cfc3db}.pre-modal .objective{margin-top:9px}
+.summary-modal{width:min(680px,100%)}
+.summary-grid{display:grid;gap:12px}
+.summary-card{display:grid;grid-template-columns:54px minmax(0,1fr);gap:13px;padding:15px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(120deg,#211629,#110d18)}
+.summary-card:nth-child(1){border-left:2px solid var(--cyan)}.summary-card:nth-child(2){border-left:2px solid var(--violet)}.summary-card:nth-child(3){border-left:2px solid var(--red)}
+.summary-number{font:700 20px var(--mono);color:var(--violet)}
+.summary-card h3{font:11px var(--mono);margin-bottom:7px}
+.summary-card p{font-size:11px;line-height:1.9;color:#cfc3db}
+.summary-note{margin-top:14px;padding:12px;border:1px solid #8f3d566e;border-radius:8px;background:#30131f80;color:#e9a4b5;font-size:10px;line-height:1.8}
+/* 보안 침해 */
+.shutdown{position:fixed;inset:0;z-index:100;overflow:hidden;background:#030207;display:flex;align-items:center;justify-content:center;padding:22px;text-align:center;font-family:var(--mono)}
+.shutdown:before{content:"";position:absolute;inset:-30%;background:repeating-linear-gradient(0deg,transparent 0 3px,#ff174408 4px),radial-gradient(ellipse at center,#42102755,transparent 60%);animation:staticNoise .16s infinite}
+@keyframes staticNoise{0%{transform:translate(0,0)}25%{transform:translate(2px,-1px)}50%{transform:translate(-2px,1px)}75%{transform:translate(1px,2px)}100%{transform:translate(0,0)}}
+.shutdown-inner{position:relative;width:min(720px,100%);z-index:1}
+.warning-icon{width:72px;height:72px;border:1px solid var(--red);border-radius:50%;display:grid;place-items:center;margin:0 auto 22px;font-size:30px;color:var(--red);box-shadow:0 0 34px #ff55772c;animation:pulse 1s infinite}
+@keyframes pulse{50%{box-shadow:0 0 50px #ff557755;transform:scale(1.035)}}
+.shutdown h1{font-size:clamp(20px,5vw,38px);letter-spacing:.07em;color:var(--red);margin-bottom:13px;text-shadow:0 0 25px #ff174455}
+.shutdown p{font-size:11px;color:#e7b8c5;line-height:1.9}
+.coordinate-box{margin:20px auto 0;border:1px solid #a3445b80;background:#08040bd9;border-radius:8px;padding:15px;text-align:left;font-size:10px;line-height:2;color:#d16f89}
+.coordinate-box .line{display:flex;justify-content:space-between;gap:12px}.coordinate-box .value{font:10px var(--mono);color:#ffc0d0;text-align:right}
+.coordinate-track{height:3px;background:#321522;margin:10px 0;overflow:hidden}
+.coordinate-track span{display:block;width:0;height:100%;background:var(--red);box-shadow:0 0 10px var(--red);transition:width .15s linear}
+.alien-console{margin:15px auto 0;border:1px solid #71344b66;background:#050307e8;padding:13px;text-align:left;min-height:100px;font-size:10px;line-height:2.1;color:#c06d8a;overflow-wrap:anywhere}
+.alien-console div{animation:fadein .15s}
+.shutdown .final-message{display:none;font-size:clamp(28px,7vw,60px);font-weight:900;letter-spacing:.13em;color:#fff;text-shadow:0 0 25px #ff1744,0 0 70px #ff1744;margin-top:28px;animation:finalJump .45s steps(2,end) infinite}
+.shutdown .alien-final{display:none;font-size:clamp(15px,3vw,24px);line-height:2;letter-spacing:.12em;color:#ff8eaa;text-shadow:0 0 22px #ff1744;margin-top:10px;overflow-wrap:anywhere}
+@keyframes finalJump{0%,100%{transform:translate(0);opacity:1}20%{transform:translate(-3px,2px);opacity:.75}40%{transform:translate(3px,-1px);opacity:1}60%{transform:translate(-1px,-2px);opacity:.65}80%{transform:translate(2px,1px);opacity:1}}
+.shutdown.final .warning-icon,.shutdown.final h1,.shutdown.final p,.shutdown.final .coordinate-box,.shutdown.final .alien-console,.shutdown.final small{display:none}
+.shutdown.final .final-message,.shutdown.final .alien-final{display:block}
+.shutdown small{display:block;margin-top:17px;color:#8f6b78;font-size:9px}
+.glitch-anim{animation:glitch .12s infinite}
+@keyframes glitch{0%,100%{transform:translate(0)}20%{transform:translate(-3px,2px);filter:hue-rotate(55deg)}40%{transform:translate(3px,-2px)}60%{transform:translate(-2px,-1px);filter:hue-rotate(-55deg)}80%{transform:translate(2px,2px)}}
+@media(max-width:850px){.earth-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.chat-layout{grid-template-columns:1fr}.chat-side{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}.agent-grid{gap:9px}}
+@media(max-width:620px){
+.shell{padding:7px;align-items:stretch}.window{height:calc(100dvh - 14px);min-height:0;border-radius:11px}
+header.topbar{padding:10px}.brand-icon{width:27px;height:27px;font-size:16px}.brand-title{font-size:9px}.brand-sub{font-size:7px}
+.top-actions{gap:4px}.counter{font-size:8px;padding:6px}.quiet{font-size:8px;padding:7px}
+.nav{padding:7px;gap:5px}.tab{font-size:8px;padding:9px 3px}.tab .num{display:block;margin:0 0 2px}
+.content{padding:10px}.earth-grid{grid-template-columns:1fr}.earth-visual{max-height:430px}
+.earth-stats{gap:6px}.stat{padding:9px}.stat .number{font-size:14px}.stat .caption{font-size:9px}
+.pre-definition{grid-template-columns:1fr}.pre-card h3{font-size:12px}
+.objective{grid-template-columns:55px minmax(0,1fr);padding:12px;gap:9px}
+.agent-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.agent-card{padding:9px}.agent-name{font-size:15px}.agent-sub{font-size:9px}.rank-badge{top:15px;right:14px}
+.section-top{align-items:flex-start}.section-top p{font-size:9px}.chat-side{grid-template-columns:1fr 1fr;gap:8px}.side-card{padding:11px}
+.chat-head{padding:11px}.chat-messages{padding:10px}.bubble{font-size:10px;padding:9px 10px}.message{max-width:94%}
+.chat-compose{padding:8px}.send-btn{min-width:62px;font-size:9px}.data-row{grid-template-columns:95px minmax(0,1fr)}
+footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px minmax(0,1fr)}.modal-person h2{font-size:17px}
+.detail-grid{grid-template-columns:1fr 1fr}.secret-section{grid-template-columns:42px minmax(0,1fr);gap:9px;padding:13px}.secret-index{font-size:19px}
 }
-
-@media(max-width:760px){
-  .layout{grid-template-columns:1fr}
-  aside{border-right:0;border-bottom:1px solid var(--line);padding:8px;display:flex;gap:4px;overflow-x:auto}
-  .sidehead,.sidefoot{display:none}
-  .navbtn{width:auto;flex:1;min-width:max-content;justify-content:center;padding:9px 11px}
-  .navbtn .num{width:auto}
-  .main{padding:20px 14px 35px}
-  .hero{grid-template-columns:1fr}
-  .worldpanel{min-height:220px}
-  .grid3{grid-template-columns:1fr}
-  .profiletop{grid-template-columns:minmax(0,1fr);gap:15px}
-  .photo{width:min(100%,300px);margin:auto}
-  .profileinfo{text-align:left}
+@media(max-width:390px){
+.brand-icon{display:none}.brand-title{font-size:8px}.counter{font-size:7px}.quiet{padding:6px}.tab{font-size:7px}
+.agent-grid{gap:6px}.agent-card{padding:7px}.agent-name{font-size:13px}.card-foot{font-size:7px}
+.chat-side{grid-template-columns:1fr}.summary-card{grid-template-columns:38px minmax(0,1fr);gap:8px}.summary-number{font-size:17px}
+.research-subtab{padding:10px}.research-subtab .subtab-title{font-size:10px}
 }
-@media(max-width:430px){
-  header{padding:12px}
-  .brandname{font-size:10px;letter-spacing:1px}
-  .headright{font-size:8px}
-  .gatebox{padding:21px}
-  .pagehead h1{font-size:18px}
-  .stamp{font-size:8px}
-  .logrow{grid-template-columns:52px minmax(0,1fr);gap:8px}
-  .logrow .tag{grid-column:2;justify-self:start}
-  .asset{grid-template-columns:42px minmax(0,1fr) auto;gap:9px;padding:10px}
-  .assetmark{height:38px}
-  .assetstatus{font-size:8px}
-  .worldtitle{font-size:22px}
-  .orbit{right:-75px;opacity:.7}
-}
-@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;transition:none!important}}
+@media(prefers-reduced-motion:reduce){*,*:before,*:after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 </style>
 </head>
 <body>
-<div id="app">
-  <div class="topline"></div>
-  <header>
-    <div class="brand">
-      <div class="emblem"><span>⌬</span></div>
-      <div>
-        <div class="brandname">TERNOSA UNIFIED FORCES</div>
-        <div class="brandsub">INTERNAL NETWORK // NODE 07-A</div>
-      </div>
-    </div>
-    <div class="headright">
-      <div><span class="led"></span><span id="headState">NETWORK STANDBY</span></div>
-      <div>LOCAL TIME <span id="clock">--:--:--</span></div>
-    </div>
-  </header>
+<canvas id="bgCanvas" aria-hidden="true"></canvas>
 
-  <!-- 최초 화면: 인물 정보 및 P.R.E 명칭을 노출하지 않음 -->
-  <section id="gate">
-    <div class="gatebox">
-      <div class="gatecode">
-        <span>SECURE ACCESS NODE</span><span>07-A / CRAXTON</span>
-      </div>
-      <div class="glyph">⌬ ⟁ ⌬</div>
-      <div class="gatetitle">통합군 폐쇄망<br>접속 인증</div>
-      <div class="gateeng">UNIFIED COMMAND / RESTRICTED NETWORK</div>
-      <div class="gatedesc">
-        본 단말은 테르노사 통합군 내부 전산망에 연결되어 있습니다.<br>
-        인증되지 않은 접속 시도는 기록됩니다.<br>
-        <span class="muted">외부 단말 식별값이 확인되지 않았습니다.</span>
-      </div>
-      <div class="small muted">ACCESS TOKEN</div>
-      <div class="gatefield">
-        <input id="accessKey" autocomplete="off" spellcheck="false" placeholder="인증 코드 입력 또는 공란으로 진행">
-        <button class="btn primary" id="loginBtn">접속</button>
-      </div>
-      <div id="gateMsg">AUTHENTICATION REQUIRED // 인증 대기</div>
-      <div class="gatefoot">
-        <span>CRYPTOGRAPHIC LINK: IDLE</span>
-        <span>ENCRYPTION: T-09</span>
-      </div>
+<div class="shell">
+  <section id="landingScreen" class="window landing scanlines">
+    <div class="star-mark" aria-hidden="true">✦</div>
+    <div>
+      <span class="eyebrow"><i class="dot"></i> 9등급 기밀 단말기</span>
+      <h1>
+        TEVION UNIFIED MILITARY<br>
+        <span>중앙 통제 보안망</span>
+      </h1>
+      <p class="sub">
+        테르노사 통합군 인가 인원 전용 보안 단말기입니다.<br>
+        비인가 접근 시 자동 추적 및 방화벽 프로토콜이 실행됩니다.
+      </p>
     </div>
+    <button class="primary" onclick="enterTerminal()">✦　보안 인증 및 접속　✦</button>
+    <p class="smallnote">P.R.E. 총괄 보안 시스템 · 하버트 노드 07<br>암호화 등급 09 · 비인가 접근 금지</p>
   </section>
 
-  <section id="terminal" class="hidden">
-    <div class="noticebar">
-      <span><span class="led"></span> INTERNAL NETWORK / LOCAL SESSION ACTIVE</span>
-      <span class="alert">외부망 연결 없음 · 기록 자동 저장</span>
-      <span>SESSION <span id="sessionId">07A-0000</span></span>
-    </div>
-
-    <div class="layout">
-      <aside>
-        <div class="sidehead">COMMAND DIRECTORY</div>
-        <button class="navbtn active" data-view="observatory"><span class="num">01</span> 외부 천체 관측</button>
-        <button class="navbtn" data-view="assets"><span class="num">02</span> 현장 자산 조회</button>
-        <button class="navbtn" data-view="comms"><span class="num">03</span> 통신 기록</button>
-        <button class="navbtn" data-view="overview"><span class="num">04</span> 상황판</button>
-        <button class="navbtn" data-view="directives"><span class="num">05</span> 지휘 명령</button>
-        <div class="sidefoot">
-          AUTH LEVEL: TEMPORARY<br>
-          ORIGIN: UNVERIFIED<br>
-          <span class="gold">LOGGING: ENABLED</span><br><br>
-          <button class="backbtn" id="logoutBtn">세션 종료 ↗</button>
+  <main id="terminalWindow" class="window scanlines hidden" aria-label="테비온 중앙 통제망">
+    <header class="topbar">
+      <div class="brand">
+        <div class="brand-icon" aria-hidden="true">✦</div>
+        <div>
+          <div class="brand-title">TEVION UNIFIED MILITARY</div>
+          <div class="brand-sub">하버트 노드 07 // 암호화 연결</div>
         </div>
-      </aside>
+      </div>
+      <div class="top-actions">
+        <span id="viewTracker" class="counter">열람 0 / 3</span>
+        <button class="quiet" onclick="resetToLanding()">로그아웃 ↗</button>
+      </div>
+    </header>
 
-      <main class="main">
-        <div class="breadcrumb">P.R.E. / <span id="crumb">EXTERNAL CELESTIAL OBSERVATION</span></div>
+    <nav class="nav" aria-label="주요 메뉴">
+      <button class="tab active" id="btn-research" onclick="switchTab('research')"><span class="num">01.</span>지구 조사</button>
+      <button class="tab" id="btn-pre" onclick="switchTab('pre')"><span class="num">02.</span>P.R.E.</button>
+      <button class="tab" id="btn-agents" onclick="switchTab('agents')"><span class="num">03.</span>현장 요원</button>
+      <button class="tab" id="btn-logs" onclick="switchTab('logs')"><span class="num">04.</span>통신 로그</button>
+    </nav>
 
-        <!-- 01 상황판 -->
-        <section class="view" id="view-overview">
-          <div class="pagehead">
-            <div><h1>통합군 상황판</h1><p>COMMAND STATUS / INTERNAL USE ONLY</p></div>
-            <div class="stamp">접속 등급: 임시</div>
+    <div class="content">
+      <!-- 01 / 지구 조사 -->
+      <section id="tab-research" class="tab-content">
+        <div class="section-top">
+          <div>
+            <div class="kicker">01 / 지구 정보 자료실</div>
+            <h2 class="heading">지구 조사 데이터베이스</h2>
+            <p style="margin-top:7px">지구 및 대한민국의 환경·생물권·사회 구조에 관한 수집 기록.</p>
           </div>
+          <span class="tag cyan">자료 열람 가능</span>
+        </div>
 
-          <div class="hero">
-            <div class="panel worldpanel">
-              <div class="orbit"></div>
-              <div class="worldcontent">
-                <div class="worldname">PLANETARY OBSERVATION / T-01</div>
-                <div class="worldtitle">테비온</div>
-                <div class="small muted">TEVION · AITERNUS CONTINENT</div>
-                <div class="worlddesc">상층 대기 에어로졸 농도 높음. 표면 온도 및 태양광 유입량은 장기 관측값과 일치함. 외부 관측용 데이터는 일부 비공개 처리됨.</div>
-                <div class="worldstats">
-                  <div><div class="statlabel">EST. POPULATION</div><div class="statvalue">1.0M</div></div>
-                  <div><div class="statlabel">MEAN TEMP.</div><div class="statvalue">−20°C</div></div>
-                  <div><div class="statlabel">OCEAN COVER</div><div class="statvalue">90%</div></div>
+        <div class="research-subnav">
+          <button id="research-sub-a" class="research-subtab active" onclick="switchResearchPage('overview')">
+            <span class="subtab-code">A / 01-01</span><span class="subtab-title">행성 개요 및 사진</span>
+          </button>
+          <button id="research-sub-b" class="research-subtab" onclick="switchResearchPage('environment')">
+            <span class="subtab-code">B / 01-02</span><span class="subtab-title">행성 환경</span>
+          </button>
+        </div>
+
+        <div id="research-page-overview" class="research-subpage">
+          <div class="earth-grid">
+            <article class="panel">
+              <div class="panel-head">
+                <div><div class="kicker">01-01 / 시각 자료실</div><h2 class="heading">지구 · 대한민국</h2></div>
+                <span class="tag">1:1</span>
+              </div>
+              <div class="earth-visual">
+                <!-- 지구 사진을 넣으려면 아래 img의 src에 이미지 주소를 입력하세요. -->
+                <img id="earthPhoto" class="hidden" src="" alt="지구 사진">
+                <div id="earthPlaceholder" class="earth-placeholder">
+                  <div class="planet-symbol"></div>
+                  <div class="hint">지구 이미지 영역<br>01-01 / 사진 자료 삽입</div>
                 </div>
+                <div class="earth-photo-label"><span>지구 · 대한민국</span><span>시각 자료 / 01-01</span></div>
               </div>
-            </div>
-
-            <div class="panel">
-              <div class="panelhead"><span>COMMAND DIRECTIVE</span><span class="gold">C-01</span></div>
-              <div class="panelbody">
-                <div class="small muted">STATE LEADER / 사이베르</div>
-                <div class="quote">“우리에게 허락되지 않은 온기라면, 직접 차지하면 된다.”</div>
-                <div class="quoteattr">— 국가 원수 사이베르 / 비공개 회의록 발췌</div>
-                <div class="rule"></div>
-                <div class="minirows">
-                  <div class="minirow"><span>통합군 최고 전투자</span><span>마레비핀</span></div>
-                  <div class="minirow"><span>군사 지휘 체계</span><span class="mint">정상</span></div>
-                  <div class="minirow"><span>외부망 연결</span><span class="gold">차단</span></div>
-                </div>
+              <div class="earth-stats">
+                <div class="stat"><div class="number">약 5,200만</div><div class="caption">대한민국 인구</div></div>
+                <div class="stat"><div class="number">약 10만㎢</div><div class="caption">대한민국 면적</div></div>
+                <div class="stat"><div class="number">KST</div><div class="caption">한국 표준시 · UTC+9</div></div>
               </div>
+            </article>
+            <div class="earth-facts">
+              <article class="panel">
+                <div class="kicker">행성 정보</div>
+                <h2 class="heading">행성 개요</h2>
+                <p class="earth-description" style="margin-top:12px">
+                  지구는 태양계의 세 번째 행성으로, 액체 상태의 물과 복잡한 생태계, 고도로 발달한 지성 생명체의 사회를 보유하고 있다. 본 자료실은 현장 작전의 주요 활동 지역인 대한민국을 중심으로 정보를 분류한다.
+                </p>
+              </article>
+              <div class="fact"><div class="label">행성 지정명</div><div class="value">지구 / TERRA-3</div></div>
+              <div class="fact"><div class="label">위치</div><div class="value">태양계 · 제3행성 · 은하수 은하</div></div>
+              <div class="fact"><div class="label">주요 활동 지역</div><div class="value">대한민국 · 서울특별시</div></div>
+              <div class="fact"><div class="label">현지 언어</div><div class="value">한국어 · 대한민국 공식 언어</div></div>
+              <div class="fact"><div class="label">조사 목적</div><div class="value">인간 사회 잠입 · 생물권 관측 · 장기 개입 가능성 평가</div></div>
             </div>
           </div>
+        </div>
 
-          <div class="grid2">
-            <div class="panel">
-              <div class="panelhead"><span>COMMAND STRUCTURE</span><span>4 DIVISIONS</span></div>
-              <div class="panelbody minirows">
-                <div class="minirow"><span>행성방위사령부</span><span>PLANETARY DEFENSE</span></div>
-                <div class="minirow"><span>우주작전사령부</span><span>SPACE OPERATIONS</span></div>
-                <div class="minirow"><span>정보작전사령부</span><span>INTELLIGENCE</span></div>
-                <div class="minirow"><span>특수작전사령부</span><span>SPECIAL OPERATIONS</span></div>
-                <div class="small muted" style="margin-top:12px">최고사령부 지휘: 마레비핀 / 통합군 최고 전투자</div>
-              </div>
-            </div>
-            <div class="panel">
-              <div class="panelhead"><span>NETWORK DIAGNOSTICS</span><span class="mint">STABLE</span></div>
-              <div class="panelbody">
-                <div class="minirow"><span>암호화 계층</span><span>9 / 9</span></div>
-                <div class="bar"><i style="width:100%"></i></div>
-                <div class="minirow"><span>통신 중계 상태</span><span>97.4%</span></div>
-                <div class="bar"><i style="width:97.4%"></i></div>
-                <div class="minirow"><span>외부 단말 식별</span><span class="gold">미확인</span></div>
-                <div class="bar"><i style="width:22%;background:var(--gold)"></i></div>
-              </div>
-            </div>
-          </div>
-
-          <div class="panel" style="margin-top:12px">
-            <div class="panelhead"><span>RECENT SYSTEM EVENTS</span><span>LAST 24 HOURS</span></div>
-            <div class="panelbody loglist">
-              <div class="logrow"><div class="logtime">04:17:09</div><div><div class="logtitle">외부 천체 관측 데이터 갱신</div><div class="logdesc">하버트 행성 / 대기 분광 데이터 수신 완료.</div></div><span class="tag ok">완료</span></div>
-              <div class="logrow"><div class="logtime">02:41:33</div><div><div class="logtitle">현장 요원 통신 주기 미준수</div><div class="logdesc">개별 원인 분석은 담당 부서에 이관됨.</div></div><span class="tag warn">검토</span></div>
-              <div class="logrow"><div class="logtime">00:08:51</div><div><div class="logtitle">권한 없는 문서 인덱스 접근</div><div class="logdesc">요청 문서 식별자 일부가 기록되지 않음.</div></div><span class="tag danger">미확인</span></div>
-            </div>
-          </div>
-        </section>
-
-        <!-- 02 자산 조회: 이름 대신 식별 코드만 노출 -->
-        <section class="view" id="view-assets">
-          <div class="pagehead">
-            <div><h1>현장 자산 조회</h1><p>FIELD ASSET REGISTRY / IDENTITY DATA RESTRICTED</p></div>
-            <div class="stamp">열람 로그 기록 중</div>
-          </div>
+        <div id="research-page-environment" class="research-subpage hidden">
           <div class="panel">
-            <div class="panelhead"><span>REGISTERED FIELD PERSONNEL</span><span>3 MATCHES</span></div>
-            <div class="panelbody">
-              <div class="small muted" style="margin-bottom:14px;line-height:2">
-                조회 결과는 식별 코드로만 표시됩니다. 세부 인사 기록은 개별 권한 확인 후 열람할 수 있습니다.
-              </div>
-              <div class="querybox">
-                <input id="assetQuery" placeholder="식별 코드 검색 / 예: AX-021" autocomplete="off">
-                <button class="btn" id="queryBtn">조회</button>
-              </div>
-              <div class="assetlist" id="assetList">
-                <button class="asset" data-profile="aex">
-                  <div class="assetmark">AX<br>021</div>
-                  <div><div class="assetname">ASSET / AX-021</div><div class="assetmeta">우주작전사령부 · 장교 기록</div></div>
-                  <div class="assetstatus">열람 가능 ↗</div>
-                </button>
-                <button class="asset" data-profile="tzhev">
-                  <div class="assetmark">TZ<br>044</div>
-                  <div><div class="assetname">ASSET / TZ-044</div><div class="assetmeta">우주작전사령부 · 장교 기록</div></div>
-                  <div class="assetstatus">열람 가능 ↗</div>
-                </button>
-                <button class="asset" data-profile="mern">
-                  <div class="assetmark">MR<br>089</div>
-                  <div><div class="assetname">ASSET / MR-089</div><div class="assetmeta">특수작전사령부 · 파견 기록</div></div>
-                  <div class="assetstatus">제한 열람 ↗</div>
-                </button>
-              </div>
-              <div id="noMatches" class="hidden muted" style="padding:20px;text-align:center">일치하는 식별 코드가 없습니다.</div>
+            <div class="panel-head">
+              <div><div class="kicker">01-02 / 환경 및 현지 조사</div><h2 class="heading">행성 환경 데이터</h2></div>
+              <span class="tag violet">3개 자료 분류</span>
             </div>
-          </div>
-          <div class="panel" style="margin-top:12px">
-            <div class="panelhead"><span>PERSONNEL ACCESS POLICY</span><span class="gold">NOTICE</span></div>
-            <div class="panelbody small muted" style="line-height:2.1">
-              현장 자산의 실제 신분, 변신 능력, 임무 세부사항은 일반 인사 조회 범위에 포함되지 않습니다. 권한을 초과하는 요청은 기록되며 담당 지휘부의 검토 대상이 됩니다.
+            <div class="data-menu">
+              <button class="filter-btn active" id="data-btn-planet" onclick="switchData('planet')">01 / 행성 환경</button>
+              <button class="filter-btn" id="data-btn-biosphere" onclick="switchData('biosphere')">02 / 생물권 관측</button>
+              <button class="filter-btn" id="data-btn-social" onclick="switchData('social')">03 / 사회 행동</button>
             </div>
+            <article class="data-view" id="researchView"></article>
           </div>
-        </section>
+        </div>
+      </section>
 
-        <!-- 인물 상세 페이지 -->
-        <section class="view" id="view-profile">
-          <div class="pagehead">
-            <div><h1>개별 인사 기록</h1><p>PERSONNEL DOSSIER / RESTRICTED ACCESS</p></div>
-            <div class="stamp" id="profileStamp">CLASSIFIED</div>
+      <!-- 02 / P.R.E. -->
+      <section id="tab-pre" class="tab-content hidden">
+        <div class="section-top">
+          <div><div class="kicker">02 / PROJECT RE-EARTH</div><h2 class="heading">P.R.E. 작전 개요</h2><p style="margin-top:7px">프로젝트 리-어스 · 전략 작전 부서</p></div>
+          <span class="tag red">최고 기밀</span>
+        </div>
+        <article class="pre-hero">
+          <div class="kicker">PROJECT RE-EARTH / 기밀 문서</div>
+          <h2>PROJECT RE-EARTH</h2>
+          <p>
+            P.R.E.는 테비온 통합군 최고사령부가 승인한 지구 침투·조사 작전이다. 테르노사 출신의 현장 요원을 지구에 파견해 인간 사회에 잠입시키고, 행성의 환경과 생물권, 지성 생명체의 행동 양식에 관한 정보를 수집한다. 동시에 인간을 제외한 현지 동물종과 접촉하여 테르노사와의 합류 가능성을 조사한다.
+          </p>
+          <span class="tag red">제한 작전 / 인가 필요</span>
+        </article>
+        <div class="pre-definition">
+          <article class="pre-card">
+            <div class="pre-stamp">P.R.E.</div>
+            <h3>PROJECT RE-EARTH</h3>
+            <p>지구에 대한 장기 조사 및 침투 계획의 공식 명칭. 환경 분석, 현지 사회 정보 수집, 생물권 접촉을 통합한 전략 작전이다.</p>
+          </article>
+          <article class="pre-card">
+            <div class="pre-stamp">S.T.F.</div>
+            <h3>P.R.E. 현장 특수팀</h3>
+            <p>지구에 직접 파견되어 신분을 위장하고 현지 생활에 적응하며, 수집한 정보를 본부에 보고하는 소수 정예 작전 인원으로 구성된다.</p>
+          </article>
+        </div>
+        <div class="panel" style="margin-top:14px">
+          <div class="panel-head"><div><div class="kicker">작전 지시</div><h2 class="heading">작전 목표</h2></div><span class="tag violet">3개 지침</span></div>
+          <div class="objectives">
+            <div class="objective"><div class="objective-number">목표 01</div><div><h3>제 1 목표: 인간에게 절대 들키지 않는다.</h3><p>현지 신분과 위장 상태를 유지한다. 테르노사 및 테비온의 존재가 노출될 만한 상황을 피한다.</p></div></div>
+            <div class="objective"><div class="objective-number">목표 02</div><div><h3>제 2 목표: 지구에 침투하고 인간 사회에 녹아들어 최대한 많은 정보를 캐온다.</h3><p>현지 사회의 구성과 인간의 행동 양식, 생활 환경에 관한 정보를 수집해 본부에 보고한다.</p></div></div>
+            <div class="objective"><div class="objective-number">목표 03</div><div><h3>제 3 목표: 인간을 제외한 동물을 설득하여 테르노사에 합류하게 한다.</h3><p>현지 동물과 접촉해 의사소통 가능성을 확인하고, 테르노사 합류 의사를 확보한다.</p></div></div>
           </div>
-          <div class="panel">
-            <div class="panelhead"><span id="profileDoc">DOCUMENT / AX-021</span><span>PERSONNEL DIVISION</span></div>
-            <div class="panelbody">
-              <div class="profiletop">
-                <div class="photo">
-                  <div class="photofallback" id="photoFallback">VISUAL RECORD<br>NOT LOADED</div>
-                  <img id="profilePhoto" src="" alt="요원 식별 사진" class="hidden">
-                </div>
-                <div class="profileinfo">
-                  <div class="profileid" id="profileId">PERSONNEL ID / AX-021</div>
-                  <div class="profilename" id="profileName">AEX</div>
-                  <div class="profilelatin" id="profileLatin">FIELD OPERATIVE</div>
-                  <div class="profiledesc" id="profileDesc"></div>
-                  <div class="facts" id="profileFacts"></div>
-                </div>
-              </div>
-              <div class="recordblock">
-                <div class="blocktitle"><span>ASSIGNMENT SUMMARY</span><span>01 / BRIEF</span></div>
-                <div class="recordtext" id="profileMission"></div>
-              </div>
-              <div class="recordblock">
-                <div class="blocktitle"><span>FIELD OBSERVATION</span><span>02 / INTERNAL</span></div>
-                <div class="recordtext" id="profileNotes"></div>
-              </div>
-              <div class="recordblock">
-                <div class="blocktitle"><span>RESTRICTED REMARKS</span><span class="gold">03 / LIMITED</span></div>
-                <div class="recordtext" id="profileSecret"></div>
-              </div>
-              <div class="profileactions">
-                <button class="backbtn" id="backAssets">← 자산 목록</button>
-                <button class="backbtn" id="nextProfile">다음 기록 →</button>
-                <button class="backbtn" id="openRelated">관련 통신 로그 ↗</button>
-              </div>
-            </div>
-          </div>
-        </section>
+        </div>
+        <button class="pre-access" onclick="openPREClassified()">
+          <span><span class="access-title">▣　추가 기밀 문서</span><span class="access-sub" style="display:block">P.R.E. 현장 특수팀 운용 규정 및 비공개 부칙 · 접근 권한 확인 필요</span></span>
+          <span class="access-icon">✧</span>
+        </button>
+      </section>
 
-        <!-- 03 통신 기록 -->
-        <section class="view" id="view-comms">
-          <div class="pagehead">
-            <div><h1>통신 기록</h1><p>INTERCEPTED / ROUTINE / FIELD REPORTS</p></div>
-            <div class="stamp">일부 누락</div>
-          </div>
-          <div class="panel">
-            <div class="panelhead"><span>RECENT TRANSMISSION INDEX</span><span>LOCAL CACHE</span></div>
-            <div class="panelbody loglist">
-              <div class="logrow"><div class="logtime">04.10<br>14:22</div><div><div class="logtitle">[SECURE_LOG #9024] · AEX / 서울 이탈 경위</div><div class="logdesc">[본부 → AEX] 로스앤젤레스에서 서울로 이탈한 경위를 제출하라. 대상 인간 관측은 진행 중인가?<br><span class="mint">[AEX]</span> 의도한 건 아니었는데요. 서울의 고구마가 꽤 훌륭해서 말입니다. 대상이 자꾸 챙겨주는데, 이것도 정보 수집의 일환 아니겠습니까?</div></div><span class="tag ok">수신 완료</span></div>
-              <div class="logrow"><div class="logtime">04.11<br>23:45</div><div><div class="logtitle">[SECURE_LOG #9025] · TEZEV / 감시 장비 파손</div><div class="logdesc">[본부 → TEZEV] 감시 장비 파괴 및 반복적인 응답 거부는 군율 위반이다. 보고하라.<br><span class="mint">[TEZEV]</span> ……고양이 ‘짜장’의 신분으로 잠입 중이다. 임무에는 이상 없다. 누나의 치료 건이나 확인해라.</div></div><span class="tag warn">신호 불안정</span></div>
-              <div class="logrow"><div class="logtime">04.12<br>08:10</div><div><div class="logtitle">[SECURE_LOG #9026] · MÆRN / 출근 및 보고 누락</div><div class="logdesc">[본부 → MÆRN] 출근 시간이다. 특수작전사령부 연락도 받지 않고 사직서는 왜 제출했나?<br><span class="mint">[MÆRN]</span> ……하. 회사에서 반려해서 출근 안 하고 있습니다. 당분간 생쥐 상태로 숨어 있을 테니 찾지 마십시오.</div></div><span class="tag danger">긴급 경보</span></div>
-            </div></div>
-          </div>
-        </section>
+      <!-- 03 / 현장 요원 -->
+      <section id="tab-agents" class="tab-content hidden">
+        <div class="section-top">
+          <div><div class="kicker">03 / 현장 인원 자료</div><h2 class="heading">현장 요원 인사 기록</h2><p style="margin-top:7px">요원 카드를 선택해 인사 기록을 열람하십시오.</p></div>
+          <span id="badgeStatus" class="tag violet">열람 0 / 3</span>
+        </div>
+        <div class="agent-grid">
+          <article onclick="openAgentModal('aex')" id="card-aex" class="agent-card" tabindex="0" role="button" aria-label="AEX 인사 기록" onkeydown="cardKey(event,'aex')">
+            <span class="tag cyan rank-badge">소위</span>
+            <div class="avatar"><span class="avatar-ring"></span><span class="avatar-symbol">◈</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <h3 class="agent-name">AEX</h3><p class="agent-sub">우주작전사령부 · 현장 관측 요원</p>
+            <div class="card-foot"><span>인사 기록 001</span><span id="status-aex" class="status">미열람</span></div>
+          </article>
+          <article onclick="openAgentModal('tezev')" id="card-tezev" class="agent-card" tabindex="0" role="button" aria-label="TEZEV 인사 기록" onkeydown="cardKey(event,'tezev')">
+            <span class="tag violet rank-badge">대위</span>
+            <div class="avatar" style="background:radial-gradient(ellipse at 50% 34%,#4a3b71,#20182e 48%,#15111d 78%)"><span class="avatar-ring"></span><span class="avatar-symbol">⌁</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <h3 class="agent-name">TEZEV</h3><p class="agent-sub">우주작전사령부 · 잠입 정보 요원</p>
+            <div class="card-foot"><span>인사 기록 002</span><span id="status-tezev" class="status">미열람</span></div>
+          </article>
+          <article onclick="openAgentModal('mern')" id="card-mern" class="agent-card" tabindex="0" role="button" aria-label="Mern 인사 기록" onkeydown="cardKey(event,'mern')">
+            <span class="tag red rank-badge">소령</span>
+            <div class="avatar" style="background:radial-gradient(ellipse at 50% 34%,#59405e,#241827 45%,#15111d 78%)"><span class="avatar-ring"></span><span class="avatar-symbol">⟡</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <h3 class="agent-name">Mern</h3><p class="agent-sub">특수작전사령부 · 특수 침투 요원</p>
+            <div class="card-foot"><span>인사 기록 003</span><span id="status-mern" class="status">미열람</span></div>
+          </article>
+        </div>
+        <p class="smallnote" style="margin-top:15px">주의: 모든 인사 기록을 열람한 뒤 자동 보안 대응이 실행될 수 있습니다.</p>
+      </section>
 
-        <!-- 04 관측 -->
-        <section class="view active" id="view-observatory">
-          <div class="pagehead">
-            <div><h1>외부 천체 관측</h1><p>EXTRASOLAR OBSERVATION / PUBLIC DATA MIRROR</p></div>
-            <div class="stamp">T-01 / TEVION</div>
+      <!-- 04 / 통신 로그 -->
+      <section id="tab-logs" class="tab-content hidden">
+        <div class="section-top">
+          <div><div class="kicker">04 / 보안 통신</div><h2 class="heading">본부 통신 로그</h2><p style="margin-top:7px">중앙 통제 본부 · 현장 요원 암호화 메시지 채널.</p></div>
+          <span class="tag cyan">암호화 연결</span>
+        </div>
+        <div class="chat-layout">
+          <div class="chat-main">
+            <div class="chat-head"><div><h2>본부 메신저</h2><p>테비온 중앙 통제 본부 / 현장 요원</p></div><span class="chat-online">● 접속 중</span></div>
+            <div class="channel-row">
+              <button class="channel active" id="channel-aex" onclick="switchChannel('aex')">AEX</button>
+              <button class="channel" id="channel-tezev" onclick="switchChannel('tezev')">TEZEV</button>
+              <button class="channel" id="channel-mern" onclick="switchChannel('mern')">Mern</button>
+            </div>
+            <div class="chat-messages" id="chatMessages" aria-live="polite"></div>
+            <div class="chat-compose">
+              <textarea id="chatInput" rows="1" maxlength="300" placeholder="본부 메시지..." aria-label="현장 요원에게 보낼 메시지"></textarea>
+              <button class="send-btn" id="sendBtn" onclick="sendMessage()">전송 ↗</button>
+            </div>
           </div>
-          <div class="grid2">
-            <div class="panel">
-              <div class="panelhead"><span>EARTH DESIGNATION</span><span>PUBLIC MIRROR</span></div>
-              <div class="panelbody">
-                <div class="worldname">HARBERT PLANET</div>
-                <div class="worldtitle" style="font-size:22px;margin-top:7px">하버트 행성</div>
-                <p class="small muted" style="line-height:2.1">지구의 관측 자료상 보라색 대기와 회색 구름이 뒤섞인 행성. 지구와 비슷한 크기로 추정되나 표면 환경과 생명체 존재 여부는 확인되지 않음.</p>
-                <div class="rule"></div>
-                <div class="minirow"><span>지구 기준 거리</span><span>약 70,000 광년</span></div>
-                <div class="minirow"><span>지구 편입 시점</span><span>약 10년 전</span></div>
-                <div class="minirow"><span>표면 직접 탐사</span><span class="gold">미실시</span></div>
+          <aside class="chat-side">
+            <div class="side-card">
+              <h3>현장 연결 상태</h3>
+              <div class="presence-list">
+                <div class="presence"><span>AEX / 소위</span><span>접속 중</span></div>
+                <div class="presence"><span>TEZEV / 대위</span><span>불안정</span></div>
+                <div class="presence"><span>Mern / 소령</span><span style="color:var(--red)">부재</span></div>
               </div>
             </div>
-            <div class="panel">
-              <div class="panelhead"><span>ATMOSPHERIC ANALYSIS</span><span>REMOTE</span></div>
-              <div class="panelbody">
-                <div class="minirow"><span>대기 분광 분석</span><span class="mint">일부 확보</span></div>
-                <div class="bar"><i style="width:36%;background:var(--blue)"></i></div>
-                <div class="minirow"><span>표면 구성</span><span class="gold">미확인</span></div>
-                <div class="bar"><i style="width:8%;background:var(--gold)"></i></div>
-                <div class="minirow"><span>생명체 존재 여부</span><span class="red">미확인</span></div>
-                <div class="bar"><i style="width:3%;background:var(--red)"></i></div>
-                <p class="tiny muted" style="margin-top:15px;line-height:1.9">※ 본 화면은 공개 관측 자료의 미러입니다. 군사 관측 데이터는 별도 분리되어 있습니다.</p>
+            <div class="side-card">
+              <h3>빠른 메시지</h3>
+              <div class="quick-actions">
+                <button class="quick-btn" onclick="quickMessage('현지 관측 상황을 보고하라.')">01 / 관측 상황 보고</button>
+                <button class="quick-btn" onclick="quickMessage('현재 위치와 신분 상태를 확인하라.')">02 / 위치 및 신분 확인</button>
+                <button class="quick-btn" onclick="quickMessage('개인적인 판단보다 작전 목표를 우선하라.')">03 / 작전 지침 재전달</button>
               </div>
             </div>
-          </div>
-          <div class="panel" style="margin-top:12px">
-            <div class="panelhead"><span>OBSERVATION LOG</span><span>SELECTED</span></div>
-            <div class="panelbody loglist">
-              <div class="logrow"><div class="logtime">T−09</div><div><div class="logtitle">상층 대기 에어로졸 분석</div><div class="logdesc">태양광 산란 특성으로 인해 표면 관측 정밀도가 저하됨.</div></div><span class="tag">보관</span></div>
-              <div class="logrow"><div class="logtime">T−04</div><div><div class="logtitle">태양 유사 광원 후보 검출</div><div class="logdesc">점 형태의 광원. 주기와 표면 온도는 추가 관측이 필요함.</div></div><span class="tag warn">재검토</span></div>
+            <div class="side-card">
+              <h3>통신 상태</h3>
+              <p>일부 현장 요원의 응답 지연 및 지시 불이행이 확인되었습니다. 이상 징후의 상세 기록은 별도 보고서에 보관되어 있습니다.</p>
+              <button class="summary-btn" style="margin-top:12px" onclick="openCommunicationSummary()">▣　교신 이상 징후 요약 열람</button>
             </div>
-          </div>
-        </section>
-
-        <!-- 05 명령 / P.R.E는 처음부터 노출하지 않음 -->
-        <section class="view" id="view-directives">
-          <div class="pagehead">
-            <div><h1>지휘 명령</h1><p>COMMAND DIRECTIVES / CLEARANCE REQUIRED</p></div>
-            <div class="stamp">권한 제한</div>
-          </div>
-          <div class="panel">
-            <div class="panelhead"><span>ACTIVE DIRECTIVE INDEX</span><span>COMMAND LEVEL</span></div>
-            <div class="panelbody loglist">
-              <div class="logrow"><div class="logtime">C-001</div><div><div class="logtitle">외부 문명 관찰 및 분석 지침</div><div class="logdesc">정보작전사령부 / 공개 범위 내 열람 가능.</div></div><span class="tag ok">열람 가능</span></div>
-              <div class="logrow"><div class="logtime">C-014</div><div><div class="logtitle">지구 파견 요원 신분 유지 지침</div><div class="logdesc">세부 작전 내용은 별도 문서로 분리되어 있음.</div></div><span class="tag warn">일부 제한</span></div>
-              <div class="logrow"><div class="logtime">C-0██</div><div><div class="logtitle">미등록 합동작전 문서</div><div class="logdesc">문서 제목과 담당 부서가 현재 인덱스에서 삭제됨.</div></div><span class="tag danger">열람 거부</span></div>
-            </div>
-          </div>
-          <div class="lockeddoc">
-            <div class="lockedtitle">▧ SEALED DOCUMENT / INDEX CORRUPTED</div>
-            <div class="lockedbody">해당 문서의 명칭은 일반 검색 결과에서 제외되어 있습니다. 열람 권한을 요청하면 상위 지휘부에 자동으로 기록이 전달됩니다.</div>
-            <button id="secretReveal">문서 인덱스 복구 시도</button>
-            <div id="secretResult" class="hidden"></div>
-          </div>
-          <div class="small muted" style="margin-top:15px;line-height:2">
-            주의: 인덱스 복구는 문서 본문을 공개하지 않습니다. 일부 잔존 메타데이터만 확인할 수 있습니다.
-          </div>
-        </section>
-      </main>
+          </aside>
+        </div>
+      </section>
     </div>
-  </section>
 
-  <footer>
-    <span>TERNOSA UNIFIED FORCES / INTERNAL NETWORK</span>
-    <span id="statusline">SESSION NOT ESTABLISHED</span>
-    <span>UNAUTHORIZED DISTRIBUTION PROHIBITED</span>
-  </footer>
+    <footer>
+      <span>시스템 상태: <span class="online" id="systemStatus">보안 연결 정상</span></span>
+      <span>TEVION UNIFIED MILITARY · 노드 07</span>
+    </footer>
+  </main>
 </div>
-<div id="toast" class="toast hidden" role="status"></div>
+
+<!-- 인사 기록 창 -->
+<div id="agentModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="modalTitle" onclick="backdropClose(event)">
+  <div class="modal scanlines">
+    <div class="modal-top"><div><div class="kicker">인사 기록 // 기밀</div><div class="modal-title" id="modalTitle">요원 인사 기록</div></div><button class="close" onclick="closeAgentModal()" aria-label="닫기">×</button></div>
+    <div id="modalContent"></div>
+  </div>
+</div>
+
+<!-- P.R.E. 추가 기밀 -->
+<div id="preModal" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="preModalTitle" onclick="backdropClose(event)">
+  <div class="modal pre-modal scanlines">
+    <div class="modal-top"><div><div class="kicker">P.R.E. // 추가 기밀</div><div class="modal-title">제한 지침</div></div><button class="close" onclick="closePREClassified()" aria-label="닫기">×</button></div>
+    <div class="pre-lock">⚠ 접근 권한 확인 완료 // 추가 제한 사항 적용</div>
+    <h2 id="preModalTitle">P.R.E. 현장 특수팀 운용 부칙</h2>
+    <p>본 문서는 P.R.E. 현장 특수팀의 지구 파견 이후 행동 지침을 규정한다. 요원은 현지 신분을 유지하고, 본부의 승인 없이 작전 범위를 변경하지 않는다. 현지 생물과의 접촉 및 인간 사회 적응 과정에서 발생하는 예측 불가능한 행동은 작전 통제의 잠재적 위험으로 분류한다.</p>
+    <div class="objectives">
+      <div class="objective"><div class="objective-number">지침 A</div><div><h3>신분 보존</h3><p>현지인에게 테르노사 및 테비온의 존재를 노출하지 않는다. 위장 신분의 유지가 불가능해질 경우 즉시 본부에 보고한다.</p></div></div>
+      <div class="objective"><div class="objective-number">지침 B</div><div><h3>정보 우선</h3><p>현지 사회의 정보와 생태 자료를 지속적으로 수집한다. 개인적 판단에 따라 보고를 지연하거나 기록을 은폐하지 않는다.</p></div></div>
+      <div class="objective"><div class="objective-number">지침 C</div><div><h3>행동 편차 보고</h3><p>지시 거부, 임무 회피, 현지 생명체에 대한 비정상적인 애착, 식습관 및 체중 변화 등 작전 수행에 영향을 미칠 수 있는 편차를 기록한다.</p></div></div>
+    </div>
+    <button class="secret-btn" onclick="closePREClassified()">문서 확인 완료 [ 문서 닫기 ]</button>
+  </div>
+</div>
+
+<!-- 극비 특이사항 전체 화면 -->
+<div id="secretBackdrop" class="modal-backdrop secret-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="secretTitle">
+  <div class="secret-modal">
+    <div class="secret-stamp">열람 제한 / 9등급 기밀</div>
+    <h2 id="secretTitle">현장 요원 행동 편차 보고서</h2>
+    <div id="secretSubtitle" class="secret-sub">현장 관측 / 열람 제한</div>
+    <div class="secret-divider"></div>
+    <div id="secretBody" class="secret-body"></div>
+    <div class="secret-footer"><span class="system-text" style="font-size:9px;color:#a77a8c">무단 배포 금지</span><button class="secret-close" onclick="closeSecret()">기록 잠금 [ 파일 봉인 ]</button></div>
+  </div>
+</div>
+
+<!-- 교신 이상 징후 -->
+<div id="summaryBackdrop" class="modal-backdrop hidden" role="dialog" aria-modal="true" aria-labelledby="summaryTitle" onclick="backdropClose(event)">
+  <div class="modal summary-modal">
+    <div class="modal-top"><div><div class="kicker">통신 기록 / 내부 검토</div><div class="modal-title" id="summaryTitle">교신 이상 징후 요약</div></div><button class="close" onclick="closeCommunicationSummary()" aria-label="닫기">×</button></div>
+    <div class="summary-grid">
+      <article class="summary-card"><div class="summary-number">01</div><div><h3>AEX / 보고 지연</h3><p>로스앤젤레스에서 서울로 이동한 경위에 대한 보고가 지연됨. 현지 인간과 반복적으로 접촉하고 있으며, 해당 행동을 정보 수집의 일부라고 주장함. 현지 음식 섭취량과 동물화 상태의 신체 변화에 대한 추가 관측이 필요함.</p></div></article>
+      <article class="summary-card"><div class="summary-number">02</div><div><h3>TEZEV / 지시 불이행</h3><p>감시 장비 파괴 및 반복적인 응답 거부. 현지 동물 신분으로 잠입 중이라고 보고했으며, 가족 관련 자료 확인을 요구함. 가족의 치료 문제가 작전 지시보다 우선될 가능성이 있음.</p></div></article>
+      <article class="summary-card"><div class="summary-number">03</div><div><h3>Mern / 연락 두절</h3><p>사직서 제출 후 출근을 거부하고 본부 연락을 회피함. 전 연인과의 이별 이후 현장 임무 복귀가 지연되고 있으며, 스트레스 상황에서 생쥐 형태로 숨어 지내는 행동이 보고됨.</p></div></article>
+    </div>
+    <div class="summary-note">내부 검토: 세 요원의 행동 편차가 개별적인 사건인지, 공통적인 외부 요인에 의한 것인지는 확인되지 않았습니다.</div>
+  </div>
+</div>
+
+<!-- 외부 신호 감지 / 보안 종료 -->
+<div id="shutdownOverlay" class="shutdown hidden" role="alertdialog" aria-modal="true">
+  <div class="shutdown-inner">
+    <div class="warning-icon">⚠</div>
+    <h1>EXTERNAL SIGNAL DETECTED</h1>
+    <p>
+      [치명적 경보] 등록되지 않은 관측자 감지.<br>
+      외부 발신지 역추적을 시작합니다.<br>
+      연결을 종료하지 마십시오.
+    </p>
+    <div class="coordinate-box">
+      <div class="line"><span>추적 대상</span><span class="value" id="traceTarget">알 수 없음</span></div>
+      <div class="line"><span>행성 발신지</span><span class="value" id="tracePlanet">계산 중...</span></div>
+      <div class="line"><span>좌표 고정</span><span class="value" id="tracePercent">00.00%</span></div>
+      <div class="coordinate-track"><span id="traceBar"></span></div>
+      <div class="line"><span>방화벽 상태</span><span class="value" id="traceStatus">초기화 중</span></div>
+    </div>
+    <div class="alien-console" id="alienConsole"><div>⟊⟒⎍ ⟟⎐⟒ ⌰⍜☊⏃⌰ ⏁⟒⍀⋔⟟⋏⏃⌰...</div></div>
+    <div id="alienFinal" class="alien-final">⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅ ⌰⍜☊⏃⌰ ⏁⟒⍀⋔⟟⋏⏃⌰</div>
+    <div id="finalMessage" class="final-message">GET OUT HUMAN</div>
+    <small id="shutdownHint">연결 불안정 // 대기하십시오</small>
+  </div>
+</div>
 
 <script>
-(() => {
-  const $ = s => document.querySelector(s);
-  const $$ = s => [...document.querySelectorAll(s)];
+'use strict';
 
-  const profiles = {
-    aex: {
-      id:'AX-021', name:'AEX', latin:'SECOND LIEUTENANT / SPACE OPERATIONS',
-      rank:'소위', age:'21세', species:'테르노사 / 수컷', unit:'우주작전사령부',
-      duty:'동물형 침투 요원', academy:'아르케온 199기',
-      photo:'images/aex.jpg',
-      desc:'연갈색 머리와 다갈색 눈. 표정과 말투가 부드럽고 능글맞으며, 긴장된 상황에서도 여유를 잃지 않는 편. 신체 능력과 변신 정밀도는 우수하나 업무 태도 평가가 일정하지 않음.',
-      mission:'1년 전 사관학교 졸업 후 P.R.E 현장특수팀에 배치됨. 최초 임무는 미국 로스앤젤레스 인근에서 골든 리트리버로 위장해 현지 정보를 수집하는 것이었으나, 지구 대기권 진입 중 우주선 오류로 대한민국 서울에 불시착함. 구조 이후 현지 생활권에 편입되었으며 현재는 서울 지역 관찰 임무를 수행 중.',
-      notes:'현지 관찰 대상과의 접촉 빈도가 임무 계획보다 높음. 통신 장치를 자의적으로 비활성화하는 사례가 반복됨. 동물형 위장 상태에서 현지 생물들과 비정상적으로 긴 시간 교류하며, 임무와 무관한 식품 선호 기록이 다수 확인됨. 현지에서 부여받은 개체명은 ‘두부’.',
-      secret:'[관계 관측 / 민간인 U-01] 대상 인간이 요원을 구조한 이후, 요원은 임무상 필요한 범위를 넘어 대상의 귀가 시간과 생활 리듬을 기억하고 이에 맞춰 행동하는 경향을 보임. 대상이 부재중일 때 본체로 복귀한 흔적이 반복 확인되었으며, 통신을 끈 채 장시간 체류하는 사례도 증가함. [행동 이상] 요원은 인간 사회의 우월성에 관한 교육 내용을 공개적으로 부정하지 않으나, 실제 보고서에서는 인간의 돌봄 행동과 사회적 유대를 반복 기록함. [판단] 임무 실패보다 대상과의 분리 가능성에 대한 회피가 행동을 좌우할 위험이 있음. 현재까지 조국에 대한 명시적 배신 의사는 확인되지 않음.'
-    },
-    tzhev: {
-      id:'TZ-044', name:'TEZEV', latin:'CAPTAIN / SPACE OPERATIONS',
-      rank:'대위', age:'21세', species:'테르노사 / 수컷', unit:'우주작전사령부',
-      duty:'동물형 침투 요원', academy:'아르케온 199기 수석 졸업',
-      photo:'images/tzhev.jpg',
-      desc:'광택이 도는 흑발과 보랏빛이 감도는 흑안. 날카로운 눈매와 절제된 표정이 특징. 규율과 절차를 중시하며 자신의 판단과 능력에 강한 확신을 가짐. 최연소 대위.',
-      mission:'사관학교 수석 졸업 후 우주작전사령부에 배치됨. 현장 실무 경험을 확보하기 위해 동물형 침투 임무에 투입. 서울의 일반 가정에 3세 수컷 검은 고양이로 접근하여 인간의 생활 방식과 문화 데이터를 수집하도록 명령받음. 현지 개체명은 ‘짜장’.',
-      notes:'훈련 성적과 분석 능력은 최상위권. 다만 동물형 위장 및 민간 생활권 접촉을 자신의 능력에 비해 낮은 임무로 인식하는 경향이 있음. 현지 반려동물용 장비 일부가 반복적으로 파손됨. 보고서의 감정 관련 항목은 지나치게 간결하며, 임무 대상에 대한 평가가 객관적이라는 주장과 실제 관찰 기록 사이에 차이가 존재함.',
-      secret:'[가족 관련 / T-02] 요원은 고향에 남아 있는 누나 티아레인의 치료법을 비공식적으로 조사 중임. 관련 자료를 확보하기 위해 임무 데이터 일부를 개인 검색에 활용한 정황이 있으나, 현장 임무를 직접 중단한 기록은 없음. [관계 관측 / 민간인 U-02] 대상 인간의 접촉과 돌봄에 대한 반응을 보고서에서 의도적으로 축소하는 경향이 있음. 쓰다듬기·음식 제공 등 단순한 접촉 뒤 변신 상태의 생리 반응이 바뀌는 사례가 반복 기록되었으며, 해당 반응을 부정하거나 장비 결함으로 분류함. [판단] 규율 위반보다 감정 노출을 더 큰 실패로 간주하는 경향이 강함. 압박을 높이면 대상 인간과의 관계를 단절하기보다 기록 자체를 은폐할 가능성이 있음.'
-    },
-    mern: {
-      id:'MR-089', name:'MÆRN', latin:'MAJOR / SPECIAL OPERATIONS',
-      rank:'소령', age:'27세', species:'테르노사 / 수컷', unit:'특수작전사령부',
-      duty:'인간형 침투 요원', academy:'아르케온 출신 장교',
-      photo:'images/merɲ.jpg',
-      desc:'회갈색 머리와 연두색 눈. 큰 체격과 성숙한 인상, 장난스럽게 올라간 입꼬리가 특징. 사교성이 좋고 업무 수행 능력이 뛰어나나, 개인적 갈등과 장기적인 책임이 걸린 선택을 미루는 경향이 있음.',
-      mission:'1년 전 대한민국 서울에 파견되어 인간 신분 ‘김메론’으로 사회에 편입됨. 현지 회사에서 장기간 근무하며 인간 사회의 문화와 행동 양식을 조사하도록 배정받음. 현장특수팀 내 인간형 침투 요원으로 분류되며, 동물형 침투 요원보다 높은 수준의 독립성과 임무 권한을 부여받음.',
-      notes:'최근 정기 통신 보고 누락. 귀속 통신 장치가 반복적으로 비활성화되어 현장 상황 파악에 공백이 발생함. 현지 직장에 사직서를 제출했으나 처리되지 않은 상태이며, 현재 출근 및 보고가 모두 확인되지 않음. 마지막으로 확인된 인간관계 관련 기록은 별도 제한 문서로 분리됨.',
-      secret:'[관계 관측 / 민간인 U-03] 대상 인간은 요원의 현지 직장 선임이자 최근까지 연인 관계였음. 관계 단절 이후 요원은 연락처 저장명을 ‘내 거’에서 ‘차단하고 싶은데 못하겠다’로 변경함. 사소한 갈등에서도 대화를 미루고 책임을 회피하는 패턴이 반복되었으며, 이별 통보 이후에는 몸살 증상과 장기 결근, 사직서 제출, 연락 두절이 연이어 발생함. [신체·행동 기록] 요원은 스트레스가 높을 때 통통한 회색 생쥐 형태로 변신해 좁은 공간에 숨는 경향이 있음. 최근 잠복 중 음식 섭취 기록과 수면 시간이 평소보다 불규칙해졌으며, 체중 변화 여부는 변신 형태의 측정값이 확보되지 않아 확정 불가. [예측 불가능성] 업무 능력은 여전히 높으나, 감정적 압박이 걸린 상황에서 갑작스러운 회피·무단 잠복·충동적 사직 시도가 관측됨. [판단] 현장 요원의 핵심 위험은 적대적 전향보다 임무와 개인 관계 사이에서 결정을 미루다 통제 불능 상태에 이르는 것임. 강제 복귀 시 인간형 신분 및 P.R.E. 노출 위험이 상승할 수 있음.'
+let audioCtx=null;
+let viewedAgents=new Set();
+let shutdownStarted=false;
+let activeModalId=null;
+let activeChannel='aex';
+let chatHistory={};
+let chatBusy=false;
+let pendingShutdown=false;
+let finalBeepTimer=null;
+
+const agentData={
+  aex:{
+    name:'AEX',korean:'아엑스',rank:'소위 · 우주작전사령부',
+    age:'21세 / 남성',height:'220 cm',
+    academy:'아르케온 통합군사학교 · 199기',
+    location:'대한민국 서울 · 행복동',
+    activity:'인간 대상 관측 및 지구 생활 양식 수집.',
+    form:'골든 리트리버, 3세 / 35 kg · 현지명: 두부',
+    symbol:'◈',
+    secretTitle:'AEX / 행동 편차 보고서',
+    secretSections:[
+      {n:'01',title:'현지 인간과의 관계 이상',body:'특정 인간과의 접촉 빈도가 초기 계획보다 증가했다. 요원은 해당 접촉을 정보 수집의 일환으로 보고하고 있으나, 실제 수집 자료와 접촉 빈도 사이에 뚜렷한 상관관계가 확인되지 않는다.\n\n대상 인간이 음식을 제공하거나 돌봄을 보일 경우 이를 거부하지 않고, 오히려 접촉을 지속하려는 경향이 관측된다.'},
+      {n:'02',title:'고구마 섭취 및 동물화 상태의 과체중 위험',body:'현지 식품, 특히 고구마를 반복적으로 섭취하고 있다. 현재의 식습관이 지속될 경우 동물화 상태에서 과체중이 발생할 가능성이 높다. 섭취량과 체중 변화를 정기적으로 기록할 것.\n\n현지 음식에 대한 선호가 임무 수행과 신체 관리에 미치는 영향을 추적할 필요가 있다.'},
+      {n:'03',title:'판단 편향 및 임무 통제 위험',body:'대상 인간이 제공하는 음식과 돌봄에 대한 반응이 반복적으로 기록되었다. 요원은 이 현상을 임무상 이점으로 설명하고 있으나, 본부는 설명의 신뢰도를 보류한다.\n\n대상 인간이 위험에 처할 경우 요원이 기존 명령을 벗어난 행동을 취할 가능성을 배제할 수 없다.'},
+      {n:'04',title:'현장 요원 관측 주의사항',body:'현지인과의 접촉을 제한할 경우 요원이 지시를 준수할지 불분명하다. 관측을 지속하되, 요원 본인에게 본 보고서의 존재를 알리지 말 것.\n\n현지 식품 섭취량, 동물화 상태의 체형 변화, 특정 인간에 대한 반응을 함께 관찰할 것.'}
+    ]
+  },
+  tezev:{
+    name:'TEZEV',korean:'테제브',rank:'대위 · 우주작전사령부',
+    age:'21세 / 남성',height:'225 cm',
+    academy:'아르케온 통합군사학교 · 199기 · 수석 졸업',
+    location:'대한민국 서울 · 행복동',
+    activity:'정보 수집 및 현지 잠입.',
+    form:'코리안 쇼트헤어, 3세 / 4 kg · 현지명: 짜장',
+    family:'누나 티아레인 — 고향에 남아 있는 유일한 깊은 애착 대상. 현재 치료가 필요한 상태.',
+    symbol:'⌁',
+    secretTitle:'TEZEV / 행동 편차 보고서',
+    secretSections:[
+      {n:'01',title:'통신 두절 및 지시 불이행',body:'본부의 반복적인 호출에 응답하지 않은 기록이 있다. 감시 장비 파괴 및 보고 거부에 대한 명확한 해명이 제출되지 않았다.\n\n임무 수행 능력 자체는 높은 수준으로 평가되나, 지시를 선택적으로 수용하는 경향이 관측된다.'},
+      {n:'02',title:'가족사 / 최고 기밀',body:'누나 티아레인은 테제브가 고향에 남겨 둔 유일한 깊은 애착 대상이다. 현재 치료가 필요한 상태이며, 테제브는 지구에서 관련 치료 자료를 독자적으로 수집하고 있다.\n\n가족의 치료와 관련된 지시가 내려질 경우 기존 작전 명령을 거부하거나 임무 우선순위를 변경할 가능성이 있다. 해당 정보는 일반 인사 기록에서 분리하며, 접근 권한을 제한할 것.'},
+      {n:'03',title:'현지 인간과의 관계 이상',body:'현지 인간이 제공하는 일상적인 친절과 돌봄에 예상보다 강하게 반응하고 있다. 요원은 이를 인정하지 않으며, 관련 질문이 이어질 경우 대화를 종료하는 경향을 보인다.\n\n동물 신분으로 잠입하는 동안 특정 인간과의 접촉이 지속될 경우, 해당 관계를 유지하기 위해 작전 동선을 변경할 가능성이 있다.'},
+      {n:'04',title:'현장 요원 관측 주의사항',body:'높은 임무 수행 능력과 낮은 정서적 개방성이 동시에 관측된다. 단, 가족 관련 자극이 발생할 경우 판단의 우선순위가 급격히 변할 수 있다.\n\n현지에서 제공받는 음식과 돌봄에 대한 반응 및 체형 변화를 관찰하되, 가족 관련 정보를 공개적으로 언급하지 말 것.'}
+    ]
+  },
+  mern:{
+    name:'Mern',korean:'메른',rank:'소령 · 특수작전사령부',
+    age:'27세 / 남성 · 김메론',height:'230 cm',
+    academy:'아르케온 통합군사학교 · 192기',
+    location:'대한민국 서울 · 현재 소재 불명',
+    activity:'행복제과 신입사원 · 인간형 위장 신분: 김메론',
+    form:'회색 생쥐 · 몸통 약 10 cm / 꼬리 약 10 cm / 60 g',
+    symbol:'⟡',
+    secretTitle:'Mern / 중대 행동 편차 보고서',
+    secretSections:[
+      {n:'01',title:'전 연인과의 이별 이후 연락 두절',body:'요원은 전 연인과 이별한 뒤 본부 연락에 응답하지 않고 있으며, 현장 임무 복귀를 거부하고 있다. 개인적 관계의 종료가 작전 판단과 일상 행동 전반에 영향을 미치는 것으로 보인다.\n\n사직서를 제출했으나 조직에 의해 반려되었다. 이후 출근을 거부하고 있으며, 현재 소재를 확인할 수 없다.'},
+      {n:'02',title:'위장 신분 이탈 및 임무 중단',body:'현지 위장 신분은 김메론이며, 행복제과 신입사원으로 잠입한 상태다. 그러나 현재 출근을 거부하고 본부 연락도 회피하고 있어 위장 신분의 유지 여부가 불확실하다.\n\n일반적인 군율 경고와 복귀 명령에는 무반응을 보이는 반면, 특정 개인과 관련된 메시지에는 즉각적인 반응을 보일 가능성이 있다.'},
+      {n:'03',title:'동물화 및 식습관 변화',body:'스트레스 상황에서 회색 생쥐 형태로 변신해 장시간 숨어 있는 행동이 확인되었다. 동물화 상태에서는 몸통 약 10 cm, 꼬리 약 10 cm, 체중 약 60 g으로 기록되어 있다.\n\n현지 식품을 과도하게 섭취하는 경향이 관측되었다. 스트레스와 식습관의 연관성 및 체중 변화를 추가로 추적할 것.'},
+      {n:'04',title:'현장 요원 관측 주의사항',body:'현재 요원은 임무 복귀보다 개인적 상실에 대한 회피를 우선하고 있다. 본부의 직접 개입은 반발을 키울 수 있으므로 접촉 시도와 감시를 병행할 것.\n\n요원의 소재를 확인할 경우 단독 접근을 피한다. 특정 인물과 관련된 자극이 예상치 못한 행동을 유발할 수 있으므로, 연락 기록과 이동 경로를 함께 관찰할 것.'}
+    ]
+  }
+};
+
+const researchData={
+  planet:{
+    title:'행성 환경 / 지구 환경',
+    rows:[
+      ['행성 분류','지구 / 태양계 제3행성'],
+      ['대한민국 위치','동아시아 · 한반도 남부'],
+      ['기후','사계절이 나타나는 온대 계절풍 기후. 지역에 따라 기온과 강수량 차이가 큼.'],
+      ['수자원','주변 해역과 하천, 호수 및 저수지를 포함한 다양한 수자원 확인.'],
+      ['환경 조사','서울의 도시 환경과 인구 밀집 지역을 우선 관측 대상으로 지정.']
+    ],
+    warning:'환경 기록: 계절 및 지역에 따른 기후 차이를 고려해 관측 자료를 분류할 것.'
+  },
+  biosphere:{
+    title:'생물권 관측 / 생태계',
+    rows:[
+      ['주요 특징','다양한 생물종과 복잡한 먹이사슬이 공존함.'],
+      ['관찰 대상','포유류·조류·수생 생물 및 미생물'],
+      ['잠입 방식','현지 동물 형태를 활용한 비노출 관측'],
+      ['이상 항목','일부 요원에게 현지 생명체와의 애착 행동 증가'],
+      ['권고','감정 반응과 임무 판단의 상관관계 추적']
+    ],
+    warning:'보안 메모: 현지 생명체와의 유대는 위장 신분의 안정성을 높일 수 있으나, 요원의 판단을 교란할 가능성도 있다.'
+  },
+  social:{
+    title:'사회 행동 분석 / 사회 구조',
+    rows:[
+      ['집단 구조','가족·친구·직업 기반의 다층적 사회망'],
+      ['주요 신호','반복적 접촉, 돌봄 행동, 선물 및 음식 공유'],
+      ['언어 패턴','직설적 정보 전달과 맥락 의존적 함의가 공존'],
+      ['위험 요소','친밀감이 장기화될 경우 임무 정보 노출 가능'],
+      ['미확인 변수','요원 개인의 정서적 유대가 보고 체계에 미치는 영향']
+    ],
+    warning:'기록 상태: 현지 사회 행동 모델은 불완전하다. 단일 사례를 종 전체의 특성으로 일반화하지 말 것.'
+  }
+};
+
+/* 음향 */
+function initAudio(){
+  try{
+    if(!audioCtx)audioCtx=new(window.AudioContext||window.webkitAudioContext)();
+    if(audioCtx.state==='suspended')audioCtx.resume();
+  }catch(e){}
+}
+function playBeep(freq=500,type='sine',duration=.08,volume=.035){
+  try{
+    initAudio();if(!audioCtx)return;
+    const osc=audioCtx.createOscillator(),gain=audioCtx.createGain();
+    osc.type=type;osc.frequency.setValueAtTime(freq,audioCtx.currentTime);
+    gain.gain.setValueAtTime(volume,audioCtx.currentTime);
+    gain.gain.exponentialRampToValueAtTime(.0001,audioCtx.currentTime+duration);
+    osc.connect(gain);gain.connect(audioCtx.destination);
+    osc.start();osc.stop(audioCtx.currentTime+duration);
+  }catch(e){}
+}
+function playAlarm(){
+  playBeep(90,'sawtooth',.7,.07);
+  setTimeout(()=>playBeep(130,'square',.35,.045),230);
+  setTimeout(()=>playBeep(70,'sawtooth',.8,.06),560);
+}
+
+/* 접속 및 메뉴 */
+function enterTerminal(){
+  initAudio();playBeep(700,'sine',.15);
+  const landing=document.getElementById('landingScreen');
+  landing.style.transition='opacity .35s,transform .35s';
+  landing.style.opacity='0';landing.style.transform='scale(.97)';
+  setTimeout(()=>{
+    landing.classList.add('hidden');
+    const term=document.getElementById('terminalWindow');
+    term.classList.remove('hidden');term.style.opacity='0';term.style.transform='scale(.985)';
+    term.style.transition='opacity .35s,transform .35s';
+    requestAnimationFrame(()=>{term.style.opacity='1';term.style.transform='scale(1)';});
+  },360);
+}
+function resetToLanding(){
+  if(shutdownStarted)return;
+  playBeep(300,'sine',.1);
+  const term=document.getElementById('terminalWindow');
+  term.style.transition='opacity .25s,transform .25s';
+  term.style.opacity='0';term.style.transform='scale(.985)';
+  setTimeout(()=>{
+    term.classList.add('hidden');
+    const landing=document.getElementById('landingScreen');
+    landing.classList.remove('hidden');landing.style.opacity='0';landing.style.transform='scale(1.015)';
+    requestAnimationFrame(()=>{landing.style.opacity='1';landing.style.transform='scale(1)';});
+  },260);
+}
+function switchTab(name){
+  if(shutdownStarted)return;
+  playBeep(600,'sine',.06);
+  document.querySelectorAll('.tab-content').forEach(el=>el.classList.add('hidden'));
+  document.querySelectorAll('.tab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('tab-'+name).classList.remove('hidden');
+  document.getElementById('btn-'+name).classList.add('active');
+}
+function escapeHTML(s){
+  return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+function cardKey(event,id){
+  if(event.key==='Enter'||event.key===' '){event.preventDefault();openAgentModal(id);}
+}
+function backdropClose(e){
+  if(e.target.id==='agentModal')closeAgentModal();
+  if(e.target.id==='preModal')closePREClassified();
+  if(e.target.id==='summaryBackdrop')closeCommunicationSummary();
+}
+
+/* 지구 조사 A/B */
+function switchResearchPage(page){
+  if(shutdownStarted)return;
+  playBeep(620,'sine',.06);
+  document.querySelectorAll('.research-subpage').forEach(el=>el.classList.add('hidden'));
+  document.querySelectorAll('.research-subtab').forEach(el=>el.classList.remove('active'));
+  document.getElementById('research-page-'+page).classList.remove('hidden');
+  document.getElementById('research-sub-'+(page==='overview'?'a':'b')).classList.add('active');
+  if(page==='environment')switchData('planet');
+}
+function switchData(id){
+  playBeep(620,'sine',.06);
+  document.querySelectorAll('.filter-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('data-btn-'+id).classList.add('active');
+  const d=researchData[id];
+  document.getElementById('researchView').innerHTML=
+    `<div class="kicker">자료 열람 / ${id.toUpperCase()}</div>
+     <h2 class="heading" style="margin-bottom:12px">${escapeHTML(d.title)}</h2>
+     ${d.rows.map(r=>`<div class="data-row"><div class="label">${escapeHTML(r[0])}</div><div class="value">${escapeHTML(r[1])}</div></div>`).join('')}
+     <div class="data-warning">⚠ ${escapeHTML(d.warning)}</div>`;
+}
+
+/* P.R.E. 기밀 문서 */
+function openPREClassified(){
+  if(shutdownStarted)return;
+  playBeep(260,'triangle',.18,.045);
+  const modal=document.getElementById('preModal');
+  modal.classList.remove('hidden');requestAnimationFrame(()=>modal.classList.add('show'));
+}
+function closePREClassified(){
+  playBeep(420,'sine',.06);
+  const modal=document.getElementById('preModal');
+  modal.classList.remove('show');setTimeout(()=>modal.classList.add('hidden'),220);
+}
+
+/* 인사 기록 및 극비 파일 */
+function openAgentModal(id){
+  if(shutdownStarted)return;
+  playBeep(850,'sine',.1);
+  const d=agentData[id];activeModalId=id;
+  const family=d.family
+    ?`<div class="detail full"><div class="label">가족 기록</div><div class="value">관련 정보는 극비 특이사항 문서로 분리 보관됨.</div></div>`
+    :'';
+  document.getElementById('modalTitle').textContent=d.name+' // '+d.korean;
+  document.getElementById('modalContent').innerHTML=`
+    <div class="modal-person">
+      <div class="modal-avatar">${d.symbol}</div>
+      <div><h2>${escapeHTML(d.name)}</h2><p>${escapeHTML(d.rank)}<br>테비온 통합군 인사 기록<br><span style="color:var(--violet)">접근 권한 확인 / 일부 제한</span></p></div>
+    </div>
+    <div class="detail-grid">
+      <div class="detail"><div class="label">나이 / 성별</div><div class="value">${escapeHTML(d.age)}</div></div>
+      <div class="detail"><div class="label">신장</div><div class="value">${escapeHTML(d.height)}</div></div>
+      <div class="detail full"><div class="label">사관학교 / 기수</div><div class="value">${escapeHTML(d.academy)}</div></div>
+      <div class="detail full"><div class="label">지구 파견 지역</div><div class="value">${escapeHTML(d.location)}</div></div>
+      <div class="detail full"><div class="label">현재 활동</div><div class="value">${escapeHTML(d.activity)}</div></div>
+      <div class="detail full"><div class="label">동물화 형태</div><div class="value">${escapeHTML(d.form)}</div></div>
+      ${family}
+    </div>
+    <button class="secret-btn" onclick="revealSecret('${id}')">✦　극비 특이사항 열람 [ 기밀 파일 열기 ]</button>`;
+
+  const modal=document.getElementById('agentModal');
+  modal.classList.remove('hidden');requestAnimationFrame(()=>modal.classList.add('show'));
+
+  if(!viewedAgents.has(id)){
+    viewedAgents.add(id);
+    const status=document.getElementById('status-'+id);
+    status.textContent='열람 완료';status.classList.add('done');
+    document.getElementById('card-'+id).classList.add('viewed');
+    document.getElementById('viewTracker').textContent=`열람 ${viewedAgents.size} / 3`;
+    document.getElementById('badgeStatus').textContent=`열람 ${viewedAgents.size} / 3`;
+    if(viewedAgents.size===3)pendingShutdown=true;
+  }
+}
+function revealSecret(id){
+  const d=agentData[id];if(!d)return;
+  playBeep(140,'sawtooth',.25,.05);
+  closeAgentModalForShutdown();
+  document.getElementById('secretTitle').textContent=d.secretTitle;
+  document.getElementById('secretSubtitle').textContent=`대상: ${d.name} // 열람 제한 // 인사 기록 ${id.toUpperCase()}`;
+  document.getElementById('secretBody').innerHTML=d.secretSections.map(s=>`
+    <article class="secret-section">
+      <div class="secret-index">${s.n}</div>
+      <div><h3>${escapeHTML(s.title)}</h3><p>${escapeHTML(s.body)}</p></div>
+    </article>`).join('');
+  const secret=document.getElementById('secretBackdrop');
+  secret.classList.remove('hidden');requestAnimationFrame(()=>secret.classList.add('show'));
+}
+function closeSecret(){
+  playBeep(280,'sawtooth',.15,.035);
+  const secret=document.getElementById('secretBackdrop');
+  secret.classList.remove('show');
+  setTimeout(()=>{
+    secret.classList.add('hidden');
+    if(!shutdownStarted){
+      const modal=document.getElementById('agentModal');
+      modal.classList.remove('hidden');requestAnimationFrame(()=>modal.classList.add('show'));
     }
-  };
-
-  let currentProfile = 'aex';
-  let visited = new Set();
-  let toastTimer;
-
-  function notify(message) {
-    const el = $('#toast');
-    el.textContent = message;
-    el.classList.remove('hidden');
-    clearTimeout(toastTimer);
-    toastTimer = setTimeout(() => el.classList.add('hidden'), 2600);
-  }
-
-  function updateClock() {
-    $('#clock').textContent = new Date().toLocaleTimeString('ko-KR', {hour12:false});
-  }
-  updateClock();
-  setInterval(updateClock, 1000);
-
-  function enterTerminal() {
-    $('#gate').classList.add('hidden');
-    $('#terminal').classList.remove('hidden');
-    $('#headState').textContent = 'SECURE SESSION ACTIVE';
-    $('#statusline').textContent = 'SESSION ACTIVE / READ-ONLY';
-    $('#sessionId').textContent = '07A-' + Math.random().toString(16).slice(2,6).toUpperCase();
-    notify('인증 세션이 시작되었습니다. 일부 문서의 권한은 제한됩니다.');
-    showView('observatory');
-  }
-
-  $('#loginBtn').addEventListener('click', () => {
-    const key = $('#accessKey').value.trim();
-    // 가상의 UI 인증: 어떤 입력값이든 데모 터미널로 진입할 수 있음.
-    if (key && key.length < 3) {
-      $('#gateMsg').textContent = 'TOKEN FORMAT ERROR // 인증 코드 형식 오류';
-      return;
+  },220);
+}
+function closeAgentModal(){
+  playBeep(400,'sine',.07);
+  const modal=document.getElementById('agentModal');
+  modal.classList.remove('show');
+  setTimeout(()=>{
+    modal.classList.add('hidden');
+    if(pendingShutdown&&!shutdownStarted){
+      pendingShutdown=false;
+      setTimeout(triggerShutdownSequence,450);
     }
-    $('#gateMsg').textContent = 'LOCAL SESSION INITIALIZED';
-    enterTerminal();
-  });
-  $('#accessKey').addEventListener('keydown', e => {
-    if (e.key === 'Enter') $('#loginBtn').click();
-  });
+  },220);
+}
+function closeAgentModalForShutdown(){
+  const modal=document.getElementById('agentModal');
+  modal.classList.remove('show');modal.classList.add('hidden');
+}
 
-  function showView(name) {
-    $$('.view').forEach(v => v.classList.remove('active'));
-    const target = $('#view-' + name);
-    if (target) target.classList.add('active');
-    $$('.navbtn').forEach(b => b.classList.toggle('active', b.dataset.view === name));
-    const labels = {
-      overview:'SITUATION OVERVIEW',
-      assets:'FIELD ASSET REGISTRY',
-      profile:'PERSONNEL DOSSIER',
-      comms:'COMMUNICATION LOG',
-      observatory:'EXTRASOLAR OBSERVATION',
-      directives:'COMMAND DIRECTIVES'
-    };
-    $('#crumb').textContent = labels[name] || 'INTERNAL NETWORK';
-    window.scrollTo({top:0,behavior:'smooth'});
+/* 통신 */
+const initialChats={
+  aex:[
+    {from:'hq',text:'로스앤젤레스에서 서울로 이동한 경위를 제출하라. 대상 인간 관측은 진행 중인가?',time:'14:22'},
+    {from:'agent',text:'의도한 건 아니었는데요. 서울의 고구마가 꽤 훌륭해서 말입니다. 대상이 자꾸 챙겨주는데, 이것도 정보 수집의 일환 아니겠습니까?',time:'14:23'}
+  ],
+  tezev:[
+    {from:'hq',text:'감시 장비 파괴 및 반복적인 응답 거부는 군율 위반이다. 보고하라.',time:'23:45'},
+    {from:'agent',text:'……고양이 ‘짜장’의 신분으로 잠입 중이다. 임무에는 이상 없다. 누나의 치료 건이나 확인해라.',time:'23:46'}
+  ],
+  mern:[
+    {from:'hq',text:'출근 시간이다. 특수작전사령부 연락도 받지 않고 사직서는 왜 제출했나?',time:'08:10'},
+    {from:'agent',text:'……하. 회사에서 반려해서 출근 안 하고 있습니다. 당분간 생쥐 상태로 숨어 있을 테니 찾지 마십시오.',time:'08:11'}
+  ]
+};
+const responses={
+  aex:[
+    '보고라면 드릴 수 있죠. 다만 현지에서 알아낸 게 꽤 많습니다. 고구마를 포함해서요.',
+    '대상과의 접촉은 원활합니다. 본부에서 생각하는 것보다 인간들은 관찰하기가 어렵더군요.',
+    '……그건 명령입니까, 아니면 그냥 궁금하신 겁니까?',
+    '알겠습니다. 다음 보고 때는 수집 자료를 정리해서 보내겠습니다. 음식 얘기는 빼고요.'
+  ],
+  tezev:[
+    '확인했다. 더 필요한 정보가 있나?',
+    '그건 작전과 무관하다. 질문을 바꿔라.',
+    '……누나의 자료를 먼저 보내라. 그 뒤에 보고하겠다.',
+    '현지 잠입은 정상적으로 진행 중이다. 같은 질문을 반복하지 마라.'
+  ],
+  mern:[
+    '……지금 바쁩니다. 쥐는 출근 안 해도 되잖습니까.',
+    '사직서 반려한 건 본부 쪽이잖아요. 그러면 본부가 출근하면 되겠네.',
+    '그 얘기는 하지 마십시오. 지금은 대화할 기분이 아닙니다.',
+    '……연락하지 말라고 했는데. 무슨 일입니까?'
+  ]
+};
+const replyIndex={aex:0,tezev:0,mern:0};
+
+function initChats(){
+  Object.keys(initialChats).forEach(id=>{chatHistory[id]=initialChats[id].map(m=>({...m}));});
+  renderChat();
+}
+function switchChannel(id){
+  if(shutdownStarted)return;
+  activeChannel=id;playBeep(520,'sine',.06);
+  document.querySelectorAll('.channel').forEach(el=>el.classList.remove('active'));
+  document.getElementById('channel-'+id).classList.add('active');
+  renderChat();
+}
+function renderChat(){
+  const container=document.getElementById('chatMessages');if(!container)return;
+  const names={aex:'AEX',tezev:'TEZEV',mern:'Mern'};
+  const messages=chatHistory[activeChannel]||[];
+  container.innerHTML=`<div class="chat-date">보안 세션 // ${names[activeChannel]} // 2030.04</div>`+
+    messages.map(m=>`
+      <div class="message ${m.from==='hq'?'hq':'agent'}" ${m.from==='agent'?`data-agent="${names[activeChannel]}"`:''}>
+        <div class="message-meta">${m.from==='hq'?'중앙 통제 본부':'현장 요원 '+names[activeChannel]} · ${escapeHTML(m.time||'현재')}</div>
+        <div class="bubble">${escapeHTML(m.text)}</div>
+      </div>`).join('');
+  container.scrollTop=container.scrollHeight;
+}
+function appendMessage(id,from,text){
+  const now=new Date();
+  const time=String(now.getHours()).padStart(2,'0')+':'+String(now.getMinutes()).padStart(2,'0');
+  chatHistory[id].push({from,text,time});renderChat();
+}
+function sendMessage(){
+  if(shutdownStarted||chatBusy)return;
+  const input=document.getElementById('chatInput');
+  const text=input.value.trim();if(!text)return;
+  input.value='';sendToAgent(text);
+}
+function quickMessage(text){
+  if(shutdownStarted||chatBusy)return;
+  document.getElementById('chatInput').value=text;sendMessage();
+}
+function sendToAgent(text){
+  const id=activeChannel;
+  appendMessage(id,'hq',text);playBeep(660,'sine',.07);
+  chatBusy=true;
+  document.getElementById('sendBtn').disabled=true;
+  document.getElementById('chatInput').disabled=true;
+  const reply=responses[id][replyIndex[id]%responses[id].length];
+  replyIndex[id]++;
+  setTimeout(()=>{
+    if(!shutdownStarted){appendMessage(id,'agent',reply);playBeep(id==='mern'?300:530,'sine',.09);}
+    chatBusy=false;
+    document.getElementById('sendBtn').disabled=false;
+    document.getElementById('chatInput').disabled=false;
+    document.getElementById('chatInput').focus();
+  },700+Math.random()*500);
+}
+document.getElementById('chatInput').addEventListener('keydown',e=>{
+  if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}
+});
+
+/* 교신 이상 징후 */
+function openCommunicationSummary(){
+  playBeep(260,'triangle',.14,.035);
+  const modal=document.getElementById('summaryBackdrop');
+  modal.classList.remove('hidden');requestAnimationFrame(()=>modal.classList.add('show'));
+}
+function closeCommunicationSummary(){
+  playBeep(420,'sine',.06);
+  const modal=document.getElementById('summaryBackdrop');
+  modal.classList.remove('show');setTimeout(()=>modal.classList.add('hidden'),220);
+}
+
+/* 외부 신호 / 좌표 추적 */
+function triggerShutdownSequence(){
+  if(shutdownStarted)return;
+  shutdownStarted=true;
+  closeAgentModalForShutdown();
+  document.getElementById('preModal').classList.add('hidden');
+  document.getElementById('secretBackdrop').classList.add('hidden');
+  document.getElementById('summaryBackdrop').classList.add('hidden');
+
+  const term=document.getElementById('terminalWindow');
+  const overlay=document.getElementById('shutdownOverlay');
+  term.classList.add('glitch-anim');
+  document.getElementById('systemStatus').textContent='방화벽 침해';
+  overlay.classList.remove('hidden');
+  playAlarm();
+
+  const consoleBox=document.getElementById('alienConsole');
+  consoleBox.innerHTML='';
+  const alienLines=[
+    '⟊⟒⎍ ⟟⎐⟒ ⌰⍜☊⏃⌰ ⏁⟒⍀⋔⟟⋏⏃⌰...',
+    '⎅⟟⋏⟒⏁⟒⎅ ⍜⎍⏁⟒⍀ ⍜⏚⌇⟒⍀⎐⟒⍀',
+    '⌰⍜☊⏃⏁⟟⋏☌ ⏁⟒⍀⍀⏃-3 ⌇⟟☌⋏⏃⌰',
+    '⏁⍀⏃☊⟒ ⌰⍜☊☍ ⟟⋏ ⏁⍀⍜⎍⏚⌰⟒',
+    '⎎⟟⍀⟒⍙⏃⌰⌰ ⟟⋏⟟⏁⟟⏃⏁⟒⎅',
+    '⟒⌖⏁⟒⍀⋏⏃⌰ ⌇⟟☌⋏⏃⌰ ⌰⍜☊☍⟒⎅'
+  ];
+  const tracePercent=document.getElementById('tracePercent');
+  const traceBar=document.getElementById('traceBar');
+  const tracePlanet=document.getElementById('tracePlanet');
+  const traceTarget=document.getElementById('traceTarget');
+  const traceStatus=document.getElementById('traceStatus');
+  let progress=0;
+  traceTarget.textContent='등록되지 않은 관측자';
+  tracePlanet.textContent='계산 중...';
+  traceStatus.textContent='추적 시작';
+
+  const progressTimer=setInterval(()=>{
+    progress+=Math.random()*8+2;
+    if(progress>=100){progress=100;clearInterval(progressTimer);}
+    tracePercent.textContent=progress.toFixed(2)+'%';
+    traceBar.style.width=progress+'%';
+    if(progress>25)tracePlanet.textContent='태양계';
+    if(progress>48)tracePlanet.textContent='TERRA-3';
+    if(progress>65)traceStatus.textContent='좌표 고정 중';
+    if(progress>85)traceStatus.textContent='관측자 식별 완료';
+    if(progress===100){tracePlanet.textContent='지구 / TERRA-3';traceStatus.textContent='좌표 고정 완료';}
+  },160);
+
+  alienLines.forEach((line,i)=>setTimeout(()=>{
+    const div=document.createElement('div');
+    div.textContent='> '+line;consoleBox.appendChild(div);
+    consoleBox.scrollTop=consoleBox.scrollHeight;
+    playBeep(160+i*35,'square',.07,.025);
+  },i*550));
+
+  setTimeout(()=>{
+    term.classList.remove('glitch-anim');term.style.filter='brightness(.2)';
+    overlay.classList.add('final');playAlarm();
+    document.getElementById('shutdownHint').textContent='⟊⟒⌰⌰ ⏁⍀⟒⋔⟟⋏⏃⏁⟒⎅';
+    startFinalBeepLoop();
+  },5200);
+}
+function startFinalBeepLoop(){
+  if(finalBeepTimer)clearInterval(finalBeepTimer);
+  playBeep(880,'sawtooth',.22,.055);
+  finalBeepTimer=setInterval(()=>{
+    if(!shutdownStarted)return;
+    playBeep(880,'sawtooth',.22,.055);
+    setTimeout(()=>playBeep(660,'square',.18,.04),240);
+  },5000);
+}
+
+/* 키보드 접근 */
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'&&!shutdownStarted){
+    if(!document.getElementById('secretBackdrop').classList.contains('hidden'))closeSecret();
+    else if(!document.getElementById('agentModal').classList.contains('hidden'))closeAgentModal();
+    else if(!document.getElementById('preModal').classList.contains('hidden'))closePREClassified();
+    else if(!document.getElementById('summaryBackdrop').classList.contains('hidden'))closeCommunicationSummary();
   }
+});
 
-  $$('.navbtn').forEach(btn => btn.addEventListener('click', () => showView(btn.dataset.view)));
+/* 초기화 */
+switchData('planet');
+initChats();
 
-  function openProfile(key) {
-    const p = profiles[key];
-    if (!p) return;
-    currentProfile = key;
-    visited.add(key);
+function setEarthPhoto(url){
+  const img=document.getElementById('earthPhoto');
+  const placeholder=document.getElementById('earthPlaceholder');
+  img.onload=()=>{img.classList.remove('hidden');placeholder.classList.add('hidden');};
+  img.onerror=()=>{img.classList.add('hidden');placeholder.classList.remove('hidden');};
+  img.src=url;
+}
+// 지구 사진을 지정하려면 아래 주석을 해제하고 이미지 파일명을 입력하세요.
+// setEarthPhoto('earth.jpg');
 
-    $('#profileId').textContent = 'PERSONNEL ID / ' + p.id;
-    $('#profileDoc').textContent = 'DOCUMENT / ' + p.id;
-    $('#profileName').textContent = p.name;
-    $('#profileLatin').textContent = p.latin;
-    $('#profileDesc').textContent = p.desc;
-    $('#profileMission').textContent = p.mission;
-    $('#profileNotes').textContent = p.notes;
-    $('#profileSecret').textContent = p.secret;
-    $('#profileStamp').textContent = key === 'mern' ? 'LIMITED ACCESS' : 'CLASSIFIED';
-
-    const facts = [
-      ['계급',p.rank],['연령',p.age],['종족',p.species],
-      ['소속',p.unit],['침투 유형',p.duty],['사관학교',p.academy]
-    ];
-    $('#profileFacts').innerHTML = facts.map(([label,value]) =>
-      `<div class="fact"><div class="factlabel">${label}</div><div class="factvalue">${value}</div></div>`
-    ).join('');
-
-    const img = $('#profilePhoto');
-    const fallback = $('#photoFallback');
-    img.classList.add('hidden');
-    fallback.classList.remove('hidden');
-    fallback.innerHTML = `VISUAL RECORD<br>${p.id}<br><br>IMAGE NOT LOADED`;
-    img.onload = () => {
-      img.classList.remove('hidden');
-      fallback.classList.add('hidden');
-    };
-    img.onerror = () => {
-      img.classList.add('hidden');
-      fallback.classList.remove('hidden');
-    };
-    img.src = p.photo;
-
-    $('#nextProfile').textContent = key === 'mern' ? '다음 기록 →' : '다음 기록 →';
-    showView('profile');
-    $('#statusline').textContent = 'RECORD OPENED / ' + p.id;
+/* 배경 별빛 */
+const canvas=document.getElementById('bgCanvas');
+const ctx=canvas.getContext('2d');
+let particles=[];
+class Particle{
+  constructor(){this.reset(true)}
+  reset(initial=false){
+    this.x=Math.random()*window.innerWidth;
+    this.y=initial?Math.random()*window.innerHeight:(Math.random()<.5?-3:window.innerHeight+3);
+    this.size=Math.random()*1.35+.25;
+    this.vx=(Math.random()-.5)*.18;this.vy=(Math.random()-.5)*.18;
+    this.alpha=Math.random()*.35+.08;
+    this.tint=Math.random()<.78?'196,170,226':'169,217,214';
   }
-
-  $$('.asset').forEach(btn => btn.addEventListener('click', () => openProfile(btn.dataset.profile)));
-
-  function filterAssets() {
-    const q = $('#assetQuery').value.trim().toLowerCase();
-    let count = 0;
-    $$('.asset').forEach(btn => {
-      const p = profiles[btn.dataset.profile];
-      const searchable = `${p.id} ${p.name} ${p.rank} ${p.unit} ${p.duty}`.toLowerCase();
-      const match = !q || searchable.includes(q);
-      btn.classList.toggle('hidden', !match);
-      if (match) count++;
-    });
-    $('#noMatches').classList.toggle('hidden', count > 0);
+  update(){
+    this.x+=this.vx;this.y+=this.vy;
+    if(this.x<-4||this.x>window.innerWidth+4||this.y<-4||this.y>window.innerHeight+4)this.reset();
   }
-  $('#queryBtn').addEventListener('click', filterAssets);
-  $('#assetQuery').addEventListener('keydown', e => { if(e.key === 'Enter') filterAssets(); });
-
-  $('#backAssets').addEventListener('click', () => showView('assets'));
-  $('#nextProfile').addEventListener('click', () => {
-    const order = ['aex','tzhev','mern'];
-    const next = order[(order.indexOf(currentProfile) + 1) % order.length];
-    openProfile(next);
-  });
-  $('#openRelated').addEventListener('click', () => {
-    showView('comms');
-    notify('현재 기록과 연관된 통신 인덱스를 표시합니다.');
-  });
-
-  $('#logoutBtn').addEventListener('click', () => {
-    $('#terminal').classList.add('hidden');
-    $('#gate').classList.remove('hidden');
-    $('#headState').textContent = 'NETWORK STANDBY';
-    $('#statusline').textContent = 'SESSION CLOSED';
-    $('#gateMsg').textContent = 'SESSION TERMINATED // 세션 종료';
-    $('#accessKey').value = '';
-    showView('overview');
-  });
-
-  $('#secretReveal').addEventListener('click', () => {
-    const box = $('#secretResult');
-    if (!box.classList.contains('hidden')) {
-      box.classList.add('hidden');
-      return;
-    }
-    box.classList.remove('hidden');
-    box.className = 'secrettext';
-    box.innerHTML = `
-      <h3>RECOVERED METADATA / 복구된 메타데이터</h3>
-      <p>문서 식별자: <span class="red">P.R.E // PROJECT RE-EARTH</span></p>
-      <p>분류: <span class="red">최고 기밀 / 국가급 합동작전</span></p>
-      <p>주관: 지배계급 / 실행: 통합군 전투계급</p>
-      <p>목적 필드: <span class="red">[본문 접근 권한 부족]</span></p>
-      <p>현장특수팀: 존재 확인. 세부 편제 및 임무 지시는 상위 권한에서만 열람 가능.</p>
-      <p class="small muted">본 메타데이터 열람은 기록되었습니다. 본문은 공개되지 않았습니다.</p>`;
-    $('#statusline').textContent = 'RESTRICTED INDEX TOUCHED / LOGGED';
-    notify('제한 문서의 잔존 메타데이터를 복구했습니다.');
-  });
-
-})();
+  draw(){
+    ctx.fillStyle=`rgba(${this.tint},${this.alpha})`;
+    ctx.beginPath();ctx.arc(this.x,this.y,this.size,0,Math.PI*2);ctx.fill();
+  }
+}
+function resizeCanvas(){
+  const dpr=Math.min(window.devicePixelRatio||1,2);
+  canvas.width=Math.floor(window.innerWidth*dpr);
+  canvas.height=Math.floor(window.innerHeight*dpr);
+  canvas.style.width=window.innerWidth+'px';canvas.style.height=window.innerHeight+'px';
+  ctx.setTransform(dpr,0,0,dpr,0,0);
+  particles=Array.from({length:Math.min(100,Math.floor(window.innerWidth/12))},()=>new Particle());
+}
+function animate(){
+  ctx.clearRect(0,0,window.innerWidth,window.innerHeight);
+  particles.forEach(p=>{p.update();p.draw()});
+  requestAnimationFrame(animate);
+}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();animate();
 </script>
 </body>
 </html>
