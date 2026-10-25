@@ -1079,7 +1079,13 @@ function closeAgentModal(){
     modal.classList.add('hidden');
     if(pendingShutdown&&!shutdownStarted){
       pendingShutdown=false;
-      setTimeout(triggerShutdownSequence,450);
+      const warning=document.getElementById('agentReadWarning');
+      const warningText=document.getElementById('agentWarningText');
+      const badge=document.getElementById('badgeStatus');
+      if(warning){warning.classList.add('alert');}
+      if(warningText)warningText.textContent='경고: 인사 기록 3 / 3건 열람 확인 · 외부 신호 추적 프로토콜 실행 준비.';
+      if(badge){badge.classList.remove('violet');badge.classList.add('red');badge.textContent='경고 · 3 / 3';}
+      setTimeout(triggerShutdownSequence,1800);
     }
   },220);
 }
