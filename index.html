@@ -163,6 +163,27 @@ aside{border-right:1px solid var(--line);padding:18px 12px;background:#0a1016}
 footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;font-size:9px;color:#526672;background:#090e14}
 .toast{position:fixed;right:18px;bottom:18px;z-index:10;max-width:min(360px,calc(100vw - 36px));padding:12px 15px;background:#131e27;border:1px solid var(--line2);color:var(--mint);font-size:10px;box-shadow:0 8px 35px #0008;animation:appear .2s ease}
 #statusline{color:var(--mint)}
+
+/* P.R.E. terminal refinement: use the available viewport instead of leaving the main panel sparse */
+.layout{min-height:calc(100vh - 110px);align-items:stretch}
+.main{display:flex;flex-direction:column;padding-bottom:24px}
+.view.active{flex:1;min-width:0}
+#view-observatory .grid2,#view-overview .grid2{align-items:stretch}
+#view-observatory .panel,#view-overview .panel{height:100%}
+.loglist{gap:0}
+.logrow{grid-template-columns:78px minmax(0,1fr) auto;padding:15px 0;min-height:78px}
+.logtitle{font-size:11px;letter-spacing:.15px}
+.logdesc{font-size:10px;line-height:1.9}
+.recordtext{line-height:2}
+.profiletop{align-items:stretch}
+.profileinfo{display:flex;flex-direction:column;justify-content:center}
+@media(min-width:761px){
+  .layout{min-height:calc(100vh - 110px)}
+  .main{min-height:calc(100vh - 110px)}
+  #view-comms .panel{min-height:460px}
+  #view-comms .loglist{min-height:360px;justify-content:space-around}
+}
+
 @media(max-width:760px){
   .layout{grid-template-columns:1fr}
   aside{border-right:0;border-bottom:1px solid var(--line);padding:8px;display:flex;gap:4px;overflow-x:auto}
@@ -249,10 +270,10 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
     <div class="layout">
       <aside>
         <div class="sidehead">COMMAND DIRECTORY</div>
-        <button class="navbtn active" data-view="overview"><span class="num">01</span> 상황판</button>
+        <button class="navbtn active" data-view="observatory"><span class="num">01</span> 외부 천체 관측</button>
         <button class="navbtn" data-view="assets"><span class="num">02</span> 현장 자산 조회</button>
         <button class="navbtn" data-view="comms"><span class="num">03</span> 통신 기록</button>
-        <button class="navbtn" data-view="observatory"><span class="num">04</span> 외부 천체 관측</button>
+        <button class="navbtn" data-view="overview"><span class="num">04</span> 상황판</button>
         <button class="navbtn" data-view="directives"><span class="num">05</span> 지휘 명령</button>
         <div class="sidefoot">
           AUTH LEVEL: TEMPORARY<br>
@@ -263,10 +284,10 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
       </aside>
 
       <main class="main">
-        <div class="breadcrumb">UNIFIED COMMAND / <span id="crumb">SITUATION OVERVIEW</span></div>
+        <div class="breadcrumb">P.R.E. / <span id="crumb">EXTERNAL CELESTIAL OBSERVATION</span></div>
 
         <!-- 01 상황판 -->
-        <section class="view active" id="view-overview">
+        <section class="view" id="view-overview">
           <div class="pagehead">
             <div><h1>통합군 상황판</h1><p>COMMAND STATUS / INTERNAL USE ONLY</p></div>
             <div class="stamp">접속 등급: 임시</div>
@@ -434,27 +455,16 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
           <div class="panel">
             <div class="panelhead"><span>RECENT TRANSMISSION INDEX</span><span>LOCAL CACHE</span></div>
             <div class="panelbody loglist">
-              <div class="logrow"><div class="logtime">23:18:04</div><div><div class="logtitle">AX-021 / 정기 보고 미전송</div><div class="logdesc">요원 측 연결 장치 응답 없음. 마지막 저장 데이터는 정상.</div></div><span class="tag warn">미수신</span></div>
-              <div class="logrow"><div class="logtime">21:06:51</div><div><div class="logtitle">TZ-044 / 임무 평가 결과 송신</div><div class="logdesc">관찰 데이터 분류 완료. 평가 항목 일부가 재검토 요청됨.</div></div><span class="tag ok">수신</span></div>
-              <div class="logrow"><div class="logtime">18:42:29</div><div><div class="logtitle">MR-089 / 개인 채널 비활성화</div><div class="logdesc">요원 본인에 의한 연결 종료. 재접속 시점 확인 불가.</div></div><span class="tag danger">확인 필요</span></div>
-              <div class="logrow"><div class="logtime">17:03:10</div><div><div class="logtitle">지구 현지 통신 중계기 재등록</div><div class="logdesc">서울 노드. 장치 식별값과 기존 기록 간 미세한 불일치.</div></div><span class="tag warn">분석 중</span></div>
-              <div class="logrow"><div class="logtime">11:20:44</div><div><div class="logtitle">출처 불명 데이터 패킷</div><div class="logdesc">일부 문자열 복구 실패. 상위 권한이 필요한 문서 참조값 포함.</div></div><span class="tag danger">미분류</span></div>
-            </div>
-          </div>
-          <div class="panel" style="margin-top:12px">
-            <div class="panelhead"><span>RECOVERED PACKET</span><span class="gold">PARTIAL</span></div>
-            <div class="panelbody small" style="line-height:2.2;color:#8599a3">
-              RX // 7F-04-NULL<br>
-              SOURCE: <span class="red">[IDENTIFIER CORRUPTED]</span><br>
-              ROUTING: COMMAND / SPECIAL OPERATIONS<br>
-              PAYLOAD: <span class="red">[ACCESS LEVEL INSUFFICIENT]</span><br>
-              SIGNATURE MATCH: <span class="gold">PENDING</span>
-            </div>
+              <div class="logrow"><div class="logtime">04.12<br>08:10</div><div><div class="logtitle">[SECURE #9026] MR-089 / 출근 및 보고 누락</div><div class="logdesc">[본부 → MERɲ] 현지 시각 09:00까지 출근 보고를 제출하라. 특수작전사령부 연락을 회피하고 사직서를 제출한 사유를 설명하라.<br><span class="mint">[MERɲ → 본부]</span> ……회사에서 반려했습니다. 그러니까 출근 안 하고 있는 겁니다. 당분간 생쥐 상태로 숨어 있을 테니 찾지 마십시오.<br><span class="gold">[본부 주석]</span> 본인이 잠복 장소를 특정하지 않은 상태로 교신을 종료함. 추적 신호 불안정.</div></div><span class="tag danger">긴급 경보</span></div>
+              <div class="logrow"><div class="logtime">04.11<br>23:45</div><div><div class="logtitle">[SECURE #9025] TZ-044 / 감시 장비 파손</div><div class="logdesc">[본부 → TZHEV] 거주지 감시 장비 3대가 연속 파손되었다. 장비 파손 및 반복적인 응답 거부는 군율 위반이다. 현재 상태를 보고하라.<br><span class="mint">[TZHEV → 본부]</span> ……고양이 ‘짜장’의 신분으로 잠입 중이다. 임무에는 이상 없다. 누나의 치료 건이나 확인해라.<br><span class="gold">[본부 주석]</span> 마지막 문장은 보고 항목과 무관함. 가족 관련 질의 이후 채널 종료.</div></div><span class="tag warn">신호 불안정</span></div>
+              <div class="logrow"><div class="logtime">04.10<br>14:22</div><div><div class="logtitle">[SECURE #9024] AX-021 / 목적지 이탈 및 관측 편향</div><div class="logdesc">[본부 → AEX] 로스앤젤레스가 아니라 서울에 정착한 경위를 제출하라. 대상 인간 관측은 진행 중인가?<br><span class="mint">[AEX → 본부]</span> 의도한 건 아니었는데요. 서울의 고구마가 꽤 훌륭해서 말입니다. 대상이 자꾸 챙겨주는데, 이것도 정보 수집의 일환 아니겠습니까?<br><span class="gold">[본부 주석]</span> 요원은 질문의 핵심에 답하지 않음. 현지 음식 및 대상 인간의 돌봄 행동을 반복 언급함.</div></div><span class="tag ok">수신 완료</span></div>
+              <div class="logrow"><div class="logtime">04.09<br>19:06</div><div><div class="logtitle">[TEAM CHANNEL] 현장특수팀 / 행동 예측 보고</div><div class="logdesc">[바이실른 → 현장 요원 전원] 임무 중 개인 감정으로 인한 통신 중단, 관측 대상과의 사적 접촉, 승인되지 않은 변신은 보고 대상이다. 인간형 요원은 사회적 관계를 작전 자산으로 오인하지 말 것.<br><span class="mint">[MERɲ]</span> 확인했습니다.<br><span class="mint">[AEX]</span> 어느 정도까지가 사적 접촉입니까? 대상이 간식을 주면 받아도 됩니까?<br><span class="mint">[TZHEV]</span> ……이 채널에서 그런 걸 묻지 마라.<br><span class="gold">[본부 주석]</span> 세 요원의 응답은 규정 확인으로 간주할 수 없음. 추가 관찰 필요.</div></div><span class="tag danger">내부 감시</span></div>
+            </div></div>
           </div>
         </section>
 
         <!-- 04 관측 -->
-        <section class="view" id="view-observatory">
+        <section class="view active" id="view-observatory">
           <div class="pagehead">
             <div><h1>외부 천체 관측</h1><p>EXTRASOLAR OBSERVATION / PUBLIC DATA MIRROR</p></div>
             <div class="stamp">T-01 / TEVION</div>
@@ -544,7 +554,7 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
       desc:'연갈색 머리와 다갈색 눈. 표정과 말투가 부드럽고 능글맞으며, 긴장된 상황에서도 여유를 잃지 않는 편. 신체 능력과 변신 정밀도는 우수하나 업무 태도 평가가 일정하지 않음.',
       mission:'1년 전 사관학교 졸업 후 P.R.E 현장특수팀에 배치됨. 최초 임무는 미국 로스앤젤레스 인근에서 골든 리트리버로 위장해 현지 정보를 수집하는 것이었으나, 지구 대기권 진입 중 우주선 오류로 대한민국 서울에 불시착함. 구조 이후 현지 생활권에 편입되었으며 현재는 서울 지역 관찰 임무를 수행 중.',
       notes:'현지 관찰 대상과의 접촉 빈도가 임무 계획보다 높음. 통신 장치를 자의적으로 비활성화하는 사례가 반복됨. 동물형 위장 상태에서 현지 생물들과 비정상적으로 긴 시간 교류하며, 임무와 무관한 식품 선호 기록이 다수 확인됨. 현지에서 부여받은 개체명은 ‘두부’.',
-      secret:'요원은 현지 생활에 빠르게 적응했으나, 인간에 대한 기존 교육과 실제 관찰 결과 사이의 모순을 보고서에 명시하지 않는 경향이 있음. 통신 응답률 저하가 단순한 태만인지, 독자적 판단에 따른 것인지는 추가 확인이 필요함.'
+      secret:'[관계 관측 / 민간인 U-01] 대상 인간이 요원을 구조한 이후, 요원은 임무상 필요한 범위를 넘어 대상의 귀가 시간과 생활 리듬을 기억하고 이에 맞춰 행동하는 경향을 보임. 대상이 부재중일 때 본체로 복귀한 흔적이 반복 확인되었으며, 통신을 끈 채 장시간 체류하는 사례도 증가함. [행동 이상] 요원은 인간 사회의 우월성에 관한 교육 내용을 공개적으로 부정하지 않으나, 실제 보고서에서는 인간의 돌봄 행동과 사회적 유대를 반복 기록함. [판단] 임무 실패보다 대상과의 분리 가능성에 대한 회피가 행동을 좌우할 위험이 있음. 현재까지 조국에 대한 명시적 배신 의사는 확인되지 않음.'
     },
     tzhev: {
       id:'TZ-044', name:'TZHEV', latin:'CAPTAIN / SPACE OPERATIONS',
@@ -554,7 +564,7 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
       desc:'광택이 도는 흑발과 보랏빛이 감도는 흑안. 날카로운 눈매와 절제된 표정이 특징. 규율과 절차를 중시하며 자신의 판단과 능력에 강한 확신을 가짐. 최연소 대위.',
       mission:'사관학교 수석 졸업 후 우주작전사령부에 배치됨. 현장 실무 경험을 확보하기 위해 동물형 침투 임무에 투입. 서울의 일반 가정에 3세 수컷 검은 고양이로 접근하여 인간의 생활 방식과 문화 데이터를 수집하도록 명령받음. 현지 개체명은 ‘짜장’.',
       notes:'훈련 성적과 분석 능력은 최상위권. 다만 동물형 위장 및 민간 생활권 접촉을 자신의 능력에 비해 낮은 임무로 인식하는 경향이 있음. 현지 반려동물용 장비 일부가 반복적으로 파손됨. 보고서의 감정 관련 항목은 지나치게 간결하며, 임무 대상에 대한 평가가 객관적이라는 주장과 실제 관찰 기록 사이에 차이가 존재함.',
-      secret:'고향에 있는 누나 티아레인의 치료 방법을 비공식적으로 조사 중인 정황이 있음. 해당 조사 자체가 현 임무를 직접적으로 방해했다는 증거는 없으나, 개인적 동기가 임무 지속 여부에 영향을 미칠 가능성을 배제할 수 없음.'
+      secret:'[가족 관련 / T-02] 요원은 고향에 남아 있는 누나 티아레인의 치료법을 비공식적으로 조사 중임. 관련 자료를 확보하기 위해 임무 데이터 일부를 개인 검색에 활용한 정황이 있으나, 현장 임무를 직접 중단한 기록은 없음. [관계 관측 / 민간인 U-02] 대상 인간의 접촉과 돌봄에 대한 반응을 보고서에서 의도적으로 축소하는 경향이 있음. 쓰다듬기·음식 제공 등 단순한 접촉 뒤 변신 상태의 생리 반응이 바뀌는 사례가 반복 기록되었으며, 해당 반응을 부정하거나 장비 결함으로 분류함. [판단] 규율 위반보다 감정 노출을 더 큰 실패로 간주하는 경향이 강함. 압박을 높이면 대상 인간과의 관계를 단절하기보다 기록 자체를 은폐할 가능성이 있음.'
     },
     mern: {
       id:'MR-089', name:'MERɲ', latin:'MAJOR / SPECIAL OPERATIONS',
@@ -564,7 +574,7 @@ footer{padding:13px 22px;border-top:1px solid var(--line);display:flex;justify-c
       desc:'회갈색 머리와 연두색 눈. 큰 체격과 성숙한 인상, 장난스럽게 올라간 입꼬리가 특징. 사교성이 좋고 업무 수행 능력이 뛰어나나, 개인적 갈등과 장기적인 책임이 걸린 선택을 미루는 경향이 있음.',
       mission:'1년 전 대한민국 서울에 파견되어 인간 신분 ‘김메론’으로 사회에 편입됨. 현지 회사에서 장기간 근무하며 인간 사회의 문화와 행동 양식을 조사하도록 배정받음. 현장특수팀 내 인간형 침투 요원으로 분류되며, 동물형 침투 요원보다 높은 수준의 독립성과 임무 권한을 부여받음.',
       notes:'최근 정기 통신 보고 누락. 귀속 통신 장치가 반복적으로 비활성화되어 현장 상황 파악에 공백이 발생함. 현지 직장에 사직서를 제출했으나 처리되지 않은 상태이며, 현재 출근 및 보고가 모두 확인되지 않음. 마지막으로 확인된 인간관계 관련 기록은 별도 제한 문서로 분리됨.',
-      secret:'요원은 인간을 열등한 종족으로 보는 기존 교리와 현지 생활에서 직접 경험한 인간의 모습을 동시에 받아들이지 못하고 있는 것으로 보임. 최근 관계 단절 이후 행동 패턴이 불안정해졌으나, 임무를 포기하거나 조국을 배신하겠다는 명확한 의사 표명은 확인되지 않음. 현 단계에서 강제 복귀 명령을 내릴 경우 현지 신분 노출 위험이 있음.'
+      secret:'[관계 관측 / 민간인 U-03] 대상 인간은 요원의 현지 직장 선임이자 최근까지 연인 관계였음. 관계 단절 이후 요원은 연락처 저장명을 ‘내 거’에서 ‘차단하고 싶은데 못하겠다’로 변경함. 사소한 갈등에서도 대화를 미루고 책임을 회피하는 패턴이 반복되었으며, 이별 통보 이후에는 몸살 증상과 장기 결근, 사직서 제출, 연락 두절이 연이어 발생함. [신체·행동 기록] 요원은 스트레스가 높을 때 통통한 회색 생쥐 형태로 변신해 좁은 공간에 숨는 경향이 있음. 최근 잠복 중 음식 섭취 기록과 수면 시간이 평소보다 불규칙해졌으며, 체중 변화 여부는 변신 형태의 측정값이 확보되지 않아 확정 불가. [예측 불가능성] 업무 능력은 여전히 높으나, 감정적 압박이 걸린 상황에서 갑작스러운 회피·무단 잠복·충동적 사직 시도가 관측됨. [판단] 현장 요원의 핵심 위험은 적대적 전향보다 임무와 개인 관계 사이에서 결정을 미루다 통제 불능 상태에 이르는 것임. 강제 복귀 시 인간형 신분 및 P.R.E. 노출 위험이 상승할 수 있음.'
     }
   };
 
