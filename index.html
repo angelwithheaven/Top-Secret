@@ -119,6 +119,11 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .agent-card{position:relative;overflow:hidden;border:1px solid var(--line);border-radius:12px;padding:13px;background:linear-gradient(155deg,#1c1728e8,#100d17f5);cursor:pointer;transition:.22s;min-width:0}
 .agent-card:hover{border-color:#a9d9d68c;transform:translateY(-3px);box-shadow:0 12px 28px #0003}
 .agent-card.viewed{border-color:#7cae9b8a}
+.agent-read-warning{display:flex;align-items:center;gap:10px;margin-top:15px;padding:12px 14px;border:1px solid #c7a8f02b;border-radius:9px;background:linear-gradient(100deg,#1b1527,#100d18);font:9px/1.7 var(--mono);color:#aaa0b8;transition:.25s}
+.agent-warning-led{flex:0 0 7px;width:7px;height:7px;border-radius:50%;background:#8d829e;box-shadow:0 0 10px #8d829e55}
+.agent-read-warning.alert{color:#ffb1c2;border-color:#ff8eaa70;background:linear-gradient(100deg,#351523,#160d18);animation:warningFlash 1.2s ease-in-out infinite}
+.agent-read-warning.alert .agent-warning-led{background:#ff8eaa;box-shadow:0 0 14px #ff8eaa}
+@keyframes warningFlash{0%,100%{box-shadow:0 0 0 #ff8eaa00}50%{box-shadow:0 0 18px #ff8eaa20}}
 .rank-badge{position:absolute;z-index:2;top:20px;right:19px}
 .avatar{aspect-ratio:3/4;width:100%;border-radius:9px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:13px;border:1px solid #ffffff0d;background:radial-gradient(ellipse at 50% 34%,#59436f 0,#292139 34%,#17131f 72%)}
 .avatar:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#ffffff08,transparent 45%,#a9d9d606)}
@@ -201,14 +206,25 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .pre-modal{width:min(700px,100%)}
 .pre-lock{border:1px solid #a3445b88;background:#310f1c;padding:11px;border-radius:7px;color:var(--red);font:10px/1.8 var(--mono);margin-bottom:17px}
 .pre-modal h2{font-size:22px;margin-bottom:13px}.pre-modal p{font-size:12px;line-height:2;color:#cfc3db}.pre-modal .objective{margin-top:9px}
-.summary-modal{width:min(680px,100%)}
-.summary-grid{display:grid;gap:12px}
-.summary-card{display:grid;grid-template-columns:54px minmax(0,1fr);gap:13px;padding:15px;border:1px solid var(--line);border-radius:10px;background:linear-gradient(120deg,#211629,#110d18)}
-.summary-card:nth-child(1){border-left:2px solid var(--cyan)}.summary-card:nth-child(2){border-left:2px solid var(--violet)}.summary-card:nth-child(3){border-left:2px solid var(--red)}
-.summary-number{font:700 20px var(--mono);color:var(--violet)}
-.summary-card h3{font:11px var(--mono);margin-bottom:7px}
-.summary-card p{font-size:11px;line-height:1.9;color:#cfc3db}
-.summary-note{margin-top:14px;padding:12px;border:1px solid #8f3d566e;border-radius:8px;background:#30131f80;color:#e9a4b5;font-size:10px;line-height:1.8}
+.summary-modal{width:min(820px,100%);padding:clamp(17px,3vw,29px);background:radial-gradient(ellipse at 0 0,#34213f55,transparent 42%),linear-gradient(150deg,#171321,#0b0911 78%)}
+.summary-modal .modal-top{align-items:flex-end;margin-bottom:22px;padding-bottom:17px;border-color:#bca2e12c}
+.summary-modal .kicker{font-size:9px;letter-spacing:.16em;color:#a99ac5}
+.summary-modal .modal-title{font:700 clamp(19px,3vw,26px)/1.35 var(--sans);letter-spacing:-.04em;color:#f2eaf9;margin-top:7px}
+.summary-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;counter-reset:report}
+.summary-card{position:relative;display:flex;flex-direction:column;gap:15px;min-width:0;min-height:270px;padding:17px 15px;border:1px solid #c7a8f026;border-radius:12px;background:linear-gradient(155deg,#21182d,#100d17 78%);overflow:hidden;transition:transform .22s,border-color .22s,box-shadow .22s;animation:summaryCardIn .42s both}
+.summary-card:nth-child(1){animation-delay:.04s}.summary-card:nth-child(2){animation-delay:.12s}.summary-card:nth-child(3){animation-delay:.2s}
+.summary-card:hover{transform:translateY(-4px);border-color:#c7a8f078;box-shadow:0 14px 35px #0005}
+.summary-card:before{content:"";position:absolute;inset:0 0 auto;height:2px;background:var(--card-accent,#c7a8f0);box-shadow:0 0 18px var(--card-accent,#c7a8f0);opacity:.8}
+.summary-card:nth-child(1){--card-accent:#a9d9d6}.summary-card:nth-child(2){--card-accent:#c7a8f0}.summary-card:nth-child(3){--card-accent:#ff8eaa}
+.summary-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.summary-number{font:800 29px/1 var(--mono);letter-spacing:-.08em;color:var(--card-accent);text-shadow:0 0 22px color-mix(in srgb,var(--card-accent) 28%,transparent)}
+.summary-state{font:8px var(--mono);letter-spacing:.06em;color:var(--card-accent);border:1px solid color-mix(in srgb,var(--card-accent) 30%,transparent);border-radius:4px;padding:5px 6px;white-space:nowrap}
+.summary-card h3{font:700 12px/1.6 var(--sans);letter-spacing:-.02em;color:#f1e8f8;margin:0 0 9px;padding-bottom:10px;border-bottom:1px solid #ffffff12}
+.summary-card p{font-size:11px;line-height:1.95;color:#c8bed4}
+.summary-note{position:relative;display:grid;grid-template-columns:90px minmax(0,1fr);gap:14px;align-items:start;margin-top:14px;padding:17px;border:1px solid #ff8eaa50;border-radius:11px;background:linear-gradient(105deg,#361725b8,#1a101d 75%);color:#e8d5df;font-size:11px;line-height:1.9;box-shadow:inset 3px 0 #ff8eaa}
+.summary-note:before{content:"ASSESSMENT";font:9px/1.8 var(--mono);letter-spacing:.08em;color:#ff9eb5}
+@keyframes summaryCardIn{from{opacity:0;transform:translateY(12px);filter:blur(4px)}to{opacity:1;transform:translateY(0);filter:blur(0)}}
+@media(max-width:640px){.summary-grid{grid-template-columns:1fr}.summary-card{min-height:0;padding:15px}.summary-card-top{margin-bottom:-3px}.summary-note{grid-template-columns:1fr;gap:5px}}
 /* 보안 침해 */
 .shutdown{position:fixed;inset:0;z-index:100;overflow:hidden;background:#030207;display:flex;align-items:center;justify-content:center;padding:22px;text-align:center;font-family:var(--mono)}
 .shutdown:before{content:"";position:absolute;inset:-30%;background:repeating-linear-gradient(0deg,transparent 0 3px,#ff174408 4px),radial-gradient(ellipse at center,#42102755,transparent 60%);animation:staticNoise .16s infinite}
@@ -445,7 +461,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
       <section id="tab-research" class="tab-content">
         <div class="section-top">
           <div>
-            <div class="kicker">지구 정보 자료실</div>
+            
             <h2 class="heading">지구 조사 데이터베이스</h2>
             <p style="margin-top:7px">지구 및 대한민국의 환경·생물권·사회 구조에 관한 수집 기록.</p>
           </div>
@@ -611,7 +627,7 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
             <div class="card-foot"><span>인사 기록 003</span><span id="status-mern" class="status">미열람</span></div>
           </article>
         </div>
-        <p class="smallnote" style="margin-top:15px">주의: 모든 인사 기록을 열람한 뒤 자동 보안 대응이 실행될 수 있습니다.</p>
+        <div id="agentReadWarning" class="agent-read-warning" role="status" aria-live="polite"><span class="agent-warning-led"></span><span id="agentWarningText">보안 알림 대기 중 · 열람 기록은 자동 집계됩니다.</span></div>
       </section>
 
       <!-- 04 / 통신 로그 -->
@@ -709,11 +725,11 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
   <div class="modal summary-modal">
     <div class="modal-top"><div><div class="kicker">통신 기록 / 내부 검토</div><div class="modal-title" id="summaryTitle">교신 이상 징후 요약</div></div><button class="close" onclick="closeCommunicationSummary()" aria-label="닫기">×</button></div>
     <div class="summary-grid">
-      <article class="summary-card"><div class="summary-number">01</div><div><h3>AEX / 보고 지연</h3><p>로스앤젤레스에서 서울로 이동한 경위에 대한 보고가 지연됨. 현지 인간과 반복적으로 접촉하고 있으며, 해당 행동을 정보 수집의 일부라고 주장함. 현지 음식 섭취량과 동물화 상태의 신체 변화에 대한 추가 관측이 필요함.</p></div></article>
-      <article class="summary-card"><div class="summary-number">02</div><div><h3>TEZEV / 지시 불이행</h3><p>감시 장비 파괴 및 반복적인 응답 거부. 현지 동물 신분으로 잠입 중이라고 보고했으며, 가족 관련 자료 확인을 요구함. 가족의 치료 문제가 작전 지시보다 우선될 가능성이 있음.</p></div></article>
-      <article class="summary-card"><div class="summary-number">03</div><div><h3>Mern / 연락 두절</h3><p>사직서 제출 후 출근을 거부하고 본부 연락을 회피함. 전 연인과의 이별 이후 현장 임무 복귀가 지연되고 있으며, 스트레스 상황에서 생쥐 형태로 숨어 지내는 행동이 보고됨.</p></div></article>
+      <article class="summary-card"><div class="summary-card-top"><span class="summary-number">01</span><span class="summary-state">REPORT DELAY</span></div><div><h3>AEX / 보고 지연</h3><p>로스앤젤레스에서 서울로 이동한 경위에 대한 보고가 지연됨. 현지 인간과 반복적으로 접촉하고 있으며, 해당 행동을 정보 수집의 일부라고 주장함. 현지 음식 섭취량과 동물화 상태의 신체 변화에 대한 추가 관측이 필요함.</p></div></article>
+      <article class="summary-card"><div class="summary-card-top"><span class="summary-number">02</span><span class="summary-state">ORDERS IGNORED</span></div><div><h3>TEZEV / 지시 불이행</h3><p>감시 장비 파괴 및 반복적인 응답 거부. 현지 동물 신분으로 잠입 중이라고 보고했으며, 가족 관련 자료 확인을 요구함. 가족의 치료 문제가 작전 지시보다 우선될 가능성이 있음.</p></div></article>
+      <article class="summary-card"><div class="summary-card-top"><span class="summary-number">03</span><span class="summary-state">NO CONTACT</span></div><div><h3>Mern / 연락 두절</h3><p>사직서 제출 후 출근을 거부하고 본부 연락을 회피함. 전 연인과의 이별 이후 현장 임무 복귀가 지연되고 있으며, 스트레스 상황에서 생쥐 형태로 숨어 지내는 행동이 보고됨.</p></div></article>
     </div>
-    <div class="summary-note">내부 검토: 세 요원의 행동 편차가 개별적인 사건인지, 공통적인 외부 요인에 의한 것인지는 확인되지 않았습니다.</div>
+    <div class="summary-note"><span>내부 검토</span><span>세 요원의 행동 편차가 개별적인 사건인지, 공통적인 외부 요인에 의한 것인지는 확인되지 않았습니다.</span></div>
   </div>
 </div>
 
@@ -1006,11 +1022,24 @@ function openAgentModal(id){
   if(!viewedAgents.has(id)){
     viewedAgents.add(id);
     const status=document.getElementById('status-'+id);
-    status.textContent='열람 완료';status.classList.add('done');
-    document.getElementById('card-'+id).classList.add('viewed');
-    document.getElementById('viewTracker').textContent=`열람 ${viewedAgents.size} / 3`;
-    document.getElementById('badgeStatus').textContent=`열람 ${viewedAgents.size} / 3`;
-    if(viewedAgents.size===3)pendingShutdown=true;
+    const card=document.getElementById('card-'+id);
+    if(status){status.textContent='열람 완료';status.classList.add('done');}
+    if(card)card.classList.add('viewed');
+    const countLabel=`열람 ${viewedAgents.size} / 3`;
+    const tracker=document.getElementById('viewTracker');
+    const badge=document.getElementById('badgeStatus');
+    if(tracker)tracker.textContent=countLabel;
+    if(badge)badge.textContent=countLabel;
+    const warning=document.getElementById('agentReadWarning');
+    const warningText=document.getElementById('agentWarningText');
+    if(viewedAgents.size===3){
+      pendingShutdown=true;
+      if(warning){warning.classList.add('alert');}
+      if(warningText)warningText.textContent='경고: 전체 인사 기록 열람 완료 · 보안 대응 프로토콜이 대기 중입니다.';
+      if(badge){badge.classList.remove('violet');badge.classList.add('red');badge.textContent='경고 · 3 / 3';}
+    }else if(warningText){
+      warningText.textContent=`열람 기록 동기화 완료 · 현재 ${viewedAgents.size} / 3건 확인.`;
+    }
   }
 }
 function revealSecret(id){
