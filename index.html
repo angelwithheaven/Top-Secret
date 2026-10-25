@@ -302,6 +302,62 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
  .record-state{font-size:9px;text-align:right}
 }
 
+
+/* P.R.E. secure entry and mission dossier redesign */
+.pre-lock-screen{min-height:clamp(420px,65vh,660px);display:grid;place-items:center;padding:clamp(12px,3vw,30px);background:radial-gradient(ellipse at 50% 42%,#38214a55,transparent 48%),linear-gradient(145deg,#0b0911,#100d18 58%,#0b1015);border:1px solid #b8a2d329;border-radius:14px;overflow:hidden}
+.pre-lock-frame{position:relative;width:min(100%,620px);padding:clamp(25px,5vw,48px);border:1px solid #a78fc34d;border-radius:13px;background:linear-gradient(145deg,#171220f5,#0d0b12f7);box-shadow:0 25px 80px #0008,inset 0 0 45px #a18ad009;text-align:center;overflow:hidden}
+.pre-lock-frame:before,.pre-lock-frame:after{content:"";position:absolute;width:42px;height:42px;pointer-events:none}
+.pre-lock-frame:before{top:0;left:0;border-top:2px solid #bca2e1;border-left:2px solid #bca2e1}
+.pre-lock-frame:after{right:0;bottom:0;border-right:2px solid #bca2e1;border-bottom:2px solid #bca2e1}
+.pre-lock-emblem{display:grid;place-items:center;width:58px;height:58px;margin:0 auto 22px;border:1px solid #a992d96b;border-radius:50%;color:#d5c3ef;font-size:25px;box-shadow:0 0 32px #9a78d31c}
+.pre-lock-kicker{font:10px var(--mono);letter-spacing:.13em;line-height:1.8;color:#a99ac5}
+.pre-lock-frame>h2{margin:15px 0 10px;font:800 clamp(23px,5vw,35px)/1.2 var(--mono);letter-spacing:-.06em;color:#f0e8fb;overflow-wrap:anywhere}
+.pre-lock-copy{font-size:12px;line-height:1.9;color:var(--muted);margin:0 auto 28px}
+.pre-password-label{display:flex;justify-content:space-between;gap:10px;margin-bottom:8px;text-align:left;font:10px var(--mono);letter-spacing:.08em;color:#cbbbe1}
+.pre-password-label span{font-family:inherit;color:var(--muted);letter-spacing:0}
+.pre-password-wrap{display:flex;align-items:center;gap:11px;min-width:0;padding:0 14px;border:1px solid #9b8ac24a;border-radius:8px;background:#08070c}
+.pre-password-icon{font-size:20px;color:#b9a0dc}
+.pre-password-wrap input{width:100%;min-width:0;padding:15px 0;border:0;outline:0;background:transparent;color:#f0e8fb;font:16px var(--mono);letter-spacing:.18em}
+.pre-password-state{flex-shrink:0;font:8px var(--mono);letter-spacing:.05em;color:#91d3d1}
+.pre-unlock-button{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;margin-top:12px;padding:15px 17px;border:1px solid #a792d98c;border-radius:8px;background:linear-gradient(100deg,#352542,#1a2d31);color:#f5edf9;font-size:12px;font-weight:700;text-align:left;transition:filter .2s,transform .2s}
+.pre-unlock-button:hover{filter:brightness(1.2);transform:translateY(-1px)}
+.pre-unlock-button span{font-size:18px;color:#aee4df}
+.pre-unlock-button.unlocking{opacity:.75}
+.pre-lock-foot{display:flex;justify-content:space-between;gap:12px;margin-top:22px;padding-top:13px;border-top:1px solid #ffffff12;font:8px/1.6 var(--mono);letter-spacing:.04em;color:#7d738c}
+.pre-content-enter{animation:fadein .42s ease}
+.pre-definition{gap:14px;margin-top:0}
+.pre-card{position:relative;min-height:230px;padding:clamp(20px,3vw,29px);background:linear-gradient(145deg,#171321,#100e17);border-color:#ffffff19}
+.pre-card:after{content:"";position:absolute;right:-28px;top:-35px;width:140px;height:140px;border:1px solid #ffffff0b;border-radius:50%;box-shadow:0 0 0 18px #ffffff03,0 0 0 36px #ffffff02;pointer-events:none}
+.pre-card-earth{background:linear-gradient(145deg,#17232b,#11111a 72%);border-color:#75b6c02e}
+.pre-card-team{background:linear-gradient(145deg,#24192f,#11101a 72%);border-color:#b39bdb2e}
+.pre-card-icon{display:grid;place-items:center;width:54px;height:54px;margin-bottom:22px;border:1px solid #ffffff1b;border-radius:15px;background:#ffffff08;font-size:27px}
+.pre-card-label{font:9px var(--mono);letter-spacing:.12em;color:#a99ac5}
+.pre-card h3{position:relative;z-index:1;margin:8px 0 11px;font-size:clamp(15px,2vw,18px);line-height:1.5;color:#f1eaf8}
+.pre-card p{position:relative;z-index:1;font-size:12px;line-height:1.95;color:#c2b8ce}
+.pre-objectives-panel{margin-top:18px;padding:clamp(17px,3vw,26px);border:1px solid #a18bc32e;border-radius:13px;background:linear-gradient(150deg,#15111d,#0c0b12 70%)}
+.pre-objectives-heading{display:flex;align-items:center;justify-content:space-between;gap:15px;margin-bottom:17px;padding-bottom:15px;border-bottom:1px solid #ffffff13}
+.pre-objectives-heading .kicker{font:9px var(--mono);letter-spacing:.15em;color:#aa97cd;margin-bottom:8px}
+.pre-objectives-heading .heading{font-size:clamp(20px,3vw,27px)}
+.pre-objective-mark{display:grid;place-items:center;width:44px;height:44px;border:1px solid #a18bc34a;border-radius:12px;color:#cbb9eb;font-size:25px}
+.pre-objectives-panel .objectives{gap:11px;margin-top:0}
+.pre-objectives-panel .objective{grid-template-columns:88px minmax(0,1fr);gap:16px;padding:clamp(14px,2.5vw,20px);background:linear-gradient(110deg,#171321,#100e17);border-color:#ffffff14}
+.pre-objectives-panel .objective-number{padding-top:2px;font:10px var(--mono);letter-spacing:.03em;color:#a99ac5}
+.pre-objectives-panel .objective h3{font-size:clamp(12px,1.6vw,14px);line-height:1.75;margin:0 0 6px;color:#eee6f6}
+.pre-objectives-panel .objective p{font-size:11px;line-height:1.9;color:#b8afc5}
+@media(max-width:600px){
+ .pre-lock-screen{min-height:450px;padding:10px}
+ .pre-lock-frame{padding:28px 18px}
+ .pre-lock-kicker{font-size:8px}
+ .pre-lock-foot{font-size:7px;flex-direction:column;align-items:center;gap:4px}
+ .pre-password-wrap{gap:8px;padding:0 10px}
+ .pre-password-state{font-size:7px}
+ .pre-definition{grid-template-columns:1fr}
+ .pre-card{min-height:0}
+ .pre-card-icon{margin-bottom:15px}
+ .pre-objectives-panel .objective{grid-template-columns:1fr;gap:8px}
+ .pre-objectives-panel .objective-number{font-size:9px}
+}
+
 </style>
 </head>
 <body>
@@ -425,42 +481,70 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
 
       <!-- 02 / P.R.E. -->
       <section id="tab-pre" class="tab-content hidden">
-        <div class="section-top">
-          <div><div class="kicker">02 / PROJECT RE-EARTH</div><h2 class="heading">P.R.E. 작전 개요</h2><p style="margin-top:7px">프로젝트 리-어스 · 전략 작전 부서</p></div>
-          <span class="tag red">최고 기밀</span>
-        </div>
-        <article class="pre-hero">
-          <div class="kicker">PROJECT RE-EARTH / 기밀 문서</div>
-          <h2>PROJECT RE-EARTH</h2>
-          <p>
-            P.R.E.는 테비온 통합군 최고사령부가 승인한 지구 침투·조사 작전이다. 테르노사 출신의 현장 요원을 지구에 파견해 인간 사회에 잠입시키고, 행성의 환경과 생물권, 지성 생명체의 행동 양식에 관한 정보를 수집한다. 동시에 인간을 제외한 현지 동물종과 접촉하여 테르노사와의 합류 가능성을 조사한다.
-          </p>
-          <span class="tag red">제한 작전 / 인가 필요</span>
-        </article>
-        <div class="pre-definition">
-          <article class="pre-card">
-            <div class="pre-stamp">P.R.E.</div>
-            <h3>PROJECT RE-EARTH</h3>
-            <p>지구에 대한 장기 조사 및 침투 계획의 공식 명칭. 환경 분석, 현지 사회 정보 수집, 생물권 접촉을 통합한 전략 작전이다.</p>
-          </article>
-          <article class="pre-card">
-            <div class="pre-stamp">S.T.F.</div>
-            <h3>P.R.E. 현장 특수팀</h3>
-            <p>지구에 직접 파견되어 신분을 위장하고 현지 생활에 적응하며, 수집한 정보를 본부에 보고하는 소수 정예 작전 인원으로 구성된다.</p>
-          </article>
-        </div>
-        <div class="panel" style="margin-top:14px">
-          <div class="panel-head"><div><div class="kicker">작전 지시</div><h2 class="heading">작전 목표</h2></div><span class="tag violet">3개 지침</span></div>
-          <div class="objectives">
-            <div class="objective"><div class="objective-number">목표 01</div><div><h3>제 1 목표: 인간에게 절대 들키지 않는다.</h3><p>현지 신분과 위장 상태를 유지한다. 테르노사 및 테비온의 존재가 노출될 만한 상황을 피한다.</p></div></div>
-            <div class="objective"><div class="objective-number">목표 02</div><div><h3>제 2 목표: 지구에 침투하고 인간 사회에 녹아들어 최대한 많은 정보를 캐온다.</h3><p>현지 사회의 구성과 인간의 행동 양식, 생활 환경에 관한 정보를 수집해 본부에 보고한다.</p></div></div>
-            <div class="objective"><div class="objective-number">목표 03</div><div><h3>제 3 목표: 인간을 제외한 동물을 설득하여 테르노사에 합류하게 한다.</h3><p>현지 동물과 접촉해 의사소통 가능성을 확인하고, 테르노사 합류 의사를 확보한다.</p></div></div>
+        <div id="preLockScreen" class="pre-lock-screen">
+          <div class="pre-lock-frame scanlines">
+            <div class="pre-lock-emblem" aria-hidden="true">✦</div>
+            <div class="pre-lock-kicker">TEVION CENTRAL COMMAND // SECURE ACCESS</div>
+            <h2>PROJECT RE-EARTH</h2>
+            <p class="pre-lock-copy">기밀 작전 자료에 접근하려면 인증을 완료하십시오.</p>
+            <label class="pre-password-label" for="prePassword">ACCESS KEY <span>인증 키</span></label>
+            <div class="pre-password-wrap">
+              <span class="pre-password-icon" aria-hidden="true">⌑</span>
+              <input id="prePassword" type="password" value="PRE-09-RE-EARTH" readonly aria-label="이미 입력된 인증 키">
+              <span class="pre-password-state">KEY LOADED</span>
+            </div>
+            <button class="pre-unlock-button" onclick="unlockPRE()">인증 및 기밀 문서 열람 <span aria-hidden="true">↗</span></button>
+            <div class="pre-lock-foot"><span>ENCRYPTION LEVEL 09</span><span>UNAUTHORIZED ACCESS PROHIBITED</span></div>
           </div>
         </div>
-        <button class="pre-access" onclick="openPREClassified()">
-          <span><span class="access-title">▣　추가 기밀 문서</span><span class="access-sub" style="display:block">P.R.E. 현장 특수팀 운용 규정 및 비공개 부칙 · 접근 권한 확인 필요</span></span>
-          <span class="access-icon">✧</span>
-        </button>
+
+        <div id="preContent" class="hidden">
+          <div class="section-top">
+            <div><h2 class="heading">PROJECT RE-EARTH</h2><p style="margin-top:7px">지구 침투·조사 계획 // 최고 기밀</p></div>
+            <span class="tag red">접근 승인</span>
+          </div>
+
+          <div class="pre-definition">
+            <article class="pre-card pre-card-earth">
+              <div class="pre-card-icon" aria-hidden="true">🌍</div>
+              <div class="pre-card-label">작전 개요</div>
+              <h3>PROJECT RE-EARTH</h3>
+              <p>지구에 대한 장기 조사 및 침투 계획의 공식 명칭. 환경 분석, 현지 사회 정보 수집, 생물권 접촉을 통합한 전략 작전이다.</p>
+            </article>
+            <article class="pre-card pre-card-team">
+              <div class="pre-card-icon" aria-hidden="true">🛰️</div>
+              <div class="pre-card-label">파견 부대</div>
+              <h3>P.R.E. 현장 특수팀</h3>
+              <p>지구에 직접 파견되어 신분을 위장하고 현지 생활에 적응하며, 수집한 정보를 본부에 보고하는 소수 정예 작전 인원으로 구성된다.</p>
+            </article>
+          </div>
+
+          <section class="pre-objectives-panel">
+            <div class="pre-objectives-heading">
+              <div><div class="kicker">MISSION DIRECTIVES</div><h2 class="heading">작전 목표</h2></div>
+              <span class="pre-objective-mark" aria-hidden="true">⌁</span>
+            </div>
+            <div class="objectives">
+              <article class="objective">
+                <div class="objective-number">목표 01</div>
+                <div><h3>인간에게 절대 들키지 않는다.</h3><p>현지 신분과 위장 상태를 유지하고, 테르노사 및 테비온의 존재가 노출될 만한 상황을 피한다.</p></div>
+              </article>
+              <article class="objective">
+                <div class="objective-number">목표 02</div>
+                <div><h3>인간 사회에 침투해 최대한 많은 정보를 수집한다.</h3><p>지구에 잠입해 현지 생활에 적응하고, 사회 구조와 인간의 행동 양식에 관한 정보를 본부에 보고한다.</p></div>
+              </article>
+              <article class="objective">
+                <div class="objective-number">목표 03</div>
+                <div><h3>인간을 제외한 동물을 테르노사에 합류시킨다.</h3><p>현지 동물과 접촉해 의사소통 가능성을 확인하고, 테르노사 합류를 설득한다.</p></div>
+              </article>
+            </div>
+          </section>
+
+          <button class="pre-access" onclick="openPREClassified()">
+            <span><span class="access-title">▣　추가 기밀 문서</span><span class="access-sub" style="display:block">현장 특수팀 운용 규정 및 비공개 부칙 · 접근 권한 확인 필요</span></span>
+            <span class="access-icon">✧</span>
+          </button>
+        </div>
       </section>
 
       <!-- 03 / 현장 요원 -->
@@ -792,6 +876,22 @@ function backdropClose(e){
 }
 
 /* 지구 조사 A/B */
+function unlockPRE(){
+  if(shutdownStarted)return;
+  playBeep(740,'sine',.08);
+  const lock=document.getElementById('preLockScreen');
+  const content=document.getElementById('preContent');
+  const button=lock.querySelector('.pre-unlock-button');
+  button.classList.add('unlocking');
+  button.innerHTML='인증 확인 중 <span aria-hidden="true">···</span>';
+  setTimeout(()=>{
+    lock.classList.add('hidden');
+    content.classList.remove('hidden');
+    content.classList.add('pre-content-enter');
+    playBeep(980,'triangle',.12,.04);
+  },420);
+}
+
 function switchResearchPage(page){
   if(shutdownStarted)return;
   playBeep(620,'sine',.06);
