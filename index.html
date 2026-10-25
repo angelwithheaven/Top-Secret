@@ -126,6 +126,11 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 @keyframes warningFlash{0%,100%{box-shadow:0 0 0 #ff8eaa00}50%{box-shadow:0 0 18px #ff8eaa20}}
 .rank-badge{position:absolute;z-index:2;top:20px;right:19px}
 .avatar{aspect-ratio:3/4;width:100%;border-radius:9px;overflow:hidden;position:relative;display:flex;align-items:center;justify-content:center;margin-bottom:13px;border:1px solid #ffffff0d;background:radial-gradient(ellipse at 50% 34%,#59436f 0,#292139 34%,#17131f 72%)}
+.avatar-photo{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0}
+.avatar.has-photo .avatar-symbol,.avatar.has-photo .avatar-ring{display:none}
+.avatar.has-photo:before{z-index:1;background:linear-gradient(180deg,#08060a00 45%,#08060acc 100%)}
+.avatar.has-photo .avatar-code{z-index:2;color:#f1e8f8;text-shadow:0 1px 4px #000}
+
 .avatar:before{content:"";position:absolute;inset:0;background:linear-gradient(135deg,#ffffff08,transparent 45%,#a9d9d606)}
 .avatar-symbol{font-size:clamp(38px,6vw,65px);color:#d3bce9;text-shadow:0 0 28px #c7a8f044;z-index:1}
 .avatar-code{position:absolute;bottom:10px;left:10px;font:8px var(--mono);color:#b0a4bf;letter-spacing:.1em}
@@ -180,6 +185,8 @@ footer{display:flex;align-items:center;justify-content:space-between;gap:10px;pa
 .close{font-size:24px;line-height:1;background:none;color:var(--muted);padding:2px 7px}.close:hover{color:white}
 .modal-person{display:grid;grid-template-columns:95px minmax(0,1fr);gap:15px;align-items:center;margin-bottom:15px}
 .modal-avatar{aspect-ratio:3/4;border:1px solid var(--line);border-radius:8px;background:radial-gradient(ellipse at 50% 35%,#59436f,#17131f 75%);display:grid;place-items:center;font-size:32px;color:var(--violet)}
+.modal-avatar img{width:100%;height:100%;object-fit:cover;object-position:center;border-radius:7px;display:block}
+
 .modal-person h2{font:600 20px var(--mono);margin-bottom:7px}.modal-person p{font-size:10px;color:var(--muted);line-height:1.8}
 .detail-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .detail{padding:11px;border:1px solid var(--line);border-radius:8px;background:#0d0b14a8;min-width:0}
@@ -615,19 +622,19 @@ footer{padding:8px 10px;font-size:7px}.modal-person{grid-template-columns:75px m
         <div class="agent-grid">
           <article onclick="openAgentModal('aex')" id="card-aex" class="agent-card" tabindex="0" role="button" aria-label="AEX 인사 기록" onkeydown="cardKey(event,'aex')">
             <span class="tag cyan rank-badge">소위</span>
-            <div class="avatar"><span class="avatar-ring"></span><span class="avatar-symbol">◈</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <div class="avatar has-photo"><img class="avatar-photo" src="aex.jpg" alt="AEX 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">◈</span><span class="avatar-code">인물 자료 / 3:4</span></div>
             <h3 class="agent-name">AEX</h3><p class="agent-sub">우주작전사령부 · 현장 관측 요원</p>
             <div class="card-foot"><span>인사 기록 001</span><span id="status-aex" class="status">미열람</span></div>
           </article>
           <article onclick="openAgentModal('tezev')" id="card-tezev" class="agent-card" tabindex="0" role="button" aria-label="TEZEV 인사 기록" onkeydown="cardKey(event,'tezev')">
             <span class="tag violet rank-badge">대위</span>
-            <div class="avatar" style="background:radial-gradient(ellipse at 50% 34%,#4a3b71,#20182e 48%,#15111d 78%)"><span class="avatar-ring"></span><span class="avatar-symbol">⌁</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <div class="avatar has-photo" style="background:radial-gradient(ellipse at 50% 34%,#4a3b71,#20182e 48%,#15111d 78%)"><img class="avatar-photo" src="tezev.jpg" alt="TEZEV 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">⌁</span><span class="avatar-code">인물 자료 / 3:4</span></div>
             <h3 class="agent-name">TEZEV</h3><p class="agent-sub">우주작전사령부 · 잠입 정보 요원</p>
             <div class="card-foot"><span>인사 기록 002</span><span id="status-tezev" class="status">미열람</span></div>
           </article>
           <article onclick="openAgentModal('mern')" id="card-mern" class="agent-card" tabindex="0" role="button" aria-label="Mern 인사 기록" onkeydown="cardKey(event,'mern')">
             <span class="tag red rank-badge">소령</span>
-            <div class="avatar" style="background:radial-gradient(ellipse at 50% 34%,#59405e,#241827 45%,#15111d 78%)"><span class="avatar-ring"></span><span class="avatar-symbol">⟡</span><span class="avatar-code">인물 자료 / 3:4</span></div>
+            <div class="avatar has-photo" style="background:radial-gradient(ellipse at 50% 34%,#59405e,#241827 45%,#15111d 78%)"><img class="avatar-photo" src="mern.jpg" alt="Mern 프로필 사진"><span class="avatar-ring"></span><span class="avatar-symbol">⟡</span><span class="avatar-code">인물 자료 / 3:4</span></div>
             <h3 class="agent-name">Mern</h3><p class="agent-sub">특수작전사령부 · 특수 침투 요원</p>
             <div class="card-foot"><span>인사 기록 003</span><span id="status-mern" class="status">미열람</span></div>
           </article>
@@ -778,6 +785,7 @@ let finalBeepTimer=null;
 
 const agentData={
   aex:{
+    image:'aex.jpg',
     name:'AEX',korean:'아엑스',rank:'소위 · 우주작전사령부',
     age:'21세 / 남성',height:'220 cm',
     academy:'아르케온 통합군사학교 · 199기',
@@ -794,6 +802,7 @@ const agentData={
     ]
   },
   tezev:{
+    image:'tezev.jpg',
     name:'TEZEV',korean:'테제브',rank:'대위 · 우주작전사령부',
     age:'21세 / 남성',height:'225 cm',
     academy:'아르케온 통합군사학교 · 199기 · 수석 졸업',
@@ -811,6 +820,7 @@ const agentData={
     ]
   },
   mern:{
+    image:'mern.jpg',
     name:'Mern',korean:'메른',rank:'소령 · 특수작전사령부',
     age:'27세 / 남성 · 김메론',height:'230 cm',
     academy:'아르케온 통합군사학교 · 192기',
@@ -1007,7 +1017,7 @@ function openAgentModal(id){
   document.getElementById('modalTitle').textContent=d.name+' // '+d.korean;
   document.getElementById('modalContent').innerHTML=`
     <div class="modal-person">
-      <div class="modal-avatar">${d.symbol}</div>
+      <div class="modal-avatar"><img src="${d.image}" alt="${escapeHTML(d.name)} 프로필 사진" onerror="this.style.display='none';this.parentElement.textContent='${d.symbol}'"></div>
       <div><h2>${escapeHTML(d.name)}</h2><p>${escapeHTML(d.rank)}<br>테비온 통합군 인사 기록<br><span style="color:var(--violet)">접근 권한 확인 / 일부 제한</span></p></div>
     </div>
     <div class="detail-grid">
